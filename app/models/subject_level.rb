@@ -1,0 +1,2 @@
+class SubjectLevel < ApplicationRecord
+end

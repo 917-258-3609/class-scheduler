@@ -1,0 +1,2 @@
+class WeeklyInterval < ApplicationRecord
+end

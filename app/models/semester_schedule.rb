@@ -1,0 +1,2 @@
+class SemesterSchedule < ApplicationRecord
+end
