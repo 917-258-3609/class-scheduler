@@ -1,2 +1,0 @@
-class Lecture < ApplicationRecord
-end

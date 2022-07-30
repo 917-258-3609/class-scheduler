@@ -1,2 +1,0 @@
-class WeeklyInterval < ApplicationRecord
-end
