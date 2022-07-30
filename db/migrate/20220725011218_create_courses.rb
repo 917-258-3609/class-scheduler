@@ -4,7 +4,7 @@ class CreateCourses < ActiveRecord::Migration[7.0]
       t.decimal :fee, precision: 10, scale: 2
       t.string :location
       t.string :comment
-
+      t.references :schedule
       t.timestamps
     end
   end
