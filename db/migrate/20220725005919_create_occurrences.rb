@@ -3,6 +3,7 @@ class CreateOccurrences < ActiveRecord::Migration[7.0]
     create_table :occurrences do |t|
       t.boolean :is_negative
       t.time :start_time
+      t.integer :count
       t.interval :duration
       t.interval :period
       t.references :schedule

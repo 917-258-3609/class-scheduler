@@ -1,6 +1,6 @@
 require "test_helper"
 
-class WeeklyIntervalTest < ActiveSupport::TestCase
+class OccurrenceTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
