@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :student do
-    name { "MyString" }
+    first_name { "John" }
+    last_name { "Doe" }
   end
 end

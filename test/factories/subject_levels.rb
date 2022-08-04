@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :subject_level do
-    subject { "MyString" }
+    subject { "Math" }
     level { 1 }
   end
 end
