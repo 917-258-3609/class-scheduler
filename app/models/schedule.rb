@@ -11,10 +11,14 @@ class Schedule < ApplicationRecord
   end
   def next_occurrence
     # TODO: handle if schedule is empty
-    next_occurrences = self.occurrences
+    next_occurrence = self.occurrences
                            .map{|o|o.next_occurrence}
                            .filter{|x|!x.nil?}
-                           .reduce{|x,y| if x < y then x else y}
+                           .min
+    return next_occurrence
+  end
+  def overlapping?(s)
+    return self.occurrences.any?{|my_o|s.occurrences.any?{|s_o| my_o.overlapping?(s_o)}}
   end
 
 end

@@ -1,7 +1,8 @@
 FactoryBot.define do
   factory :occurrence do
-    day_of_week { 1 }
-    start_time { "2022-07-24 20:59:19" }
-    duration { 1 }
+    start_time { "2022-08-01 14:00:00" }
+    count { 1 }
+    period { 1.week }
+    duration { 1.hour }
   end
 end
