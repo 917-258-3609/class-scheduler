@@ -92,6 +92,12 @@ class OccurrenceTest < ActiveSupport::TestCase
       assert_equal(start_time, subject.next_occurring_time(start_time - 1.hour))
       assert_nil(subject.next_occurring_time(start_time + 2.hour))
     end
+    should "have disjoint occurrence" do
+      @test_occurrence = FactoryBot.build(:occurrence, duration: 3.hour, period: 1.hour)
+      assert(!@test_occurrence.valid?)
+      @test_occurrence = FactoryBot.build(:occurrence, duration: 3.hour, period: 3.hour)
+      assert(@test_occurrence.valid?)
+    end
   end
   
   private

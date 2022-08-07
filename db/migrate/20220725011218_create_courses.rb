@@ -5,6 +5,8 @@ class CreateCourses < ActiveRecord::Migration[7.0]
       t.string :location
       t.string :comment
       t.boolean :is_active 
+      t.references :teacher
+      t.references :subject_level
       t.timestamps
     end
   end

@@ -4,10 +4,10 @@ FactoryBot.define do
     balance { "9.99" }
     is_active { true }
     trait :for_teacher do
-      association :accountable, factory: :parent
+      association :accountable, factory: :teacher
     end
     trait :for_student do
-      association :accountablt, factory: :student
+      association :accountable, factory: :student
     end
   end
 end

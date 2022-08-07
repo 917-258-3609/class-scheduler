@@ -7,7 +7,8 @@ class Occurrence < ApplicationRecord
     validates :duration, presence: true, comparison: {other_than: 0}
     validates :period, allow_nil: true, comparison: {other_than: 0}
     validate :duration_is_shorter_than_period
-    validate :recurring_occurrences_are_disjoint
+    validate :one_time_occurrence
+    validates_associated :schedule
 
     def one_time?
         return self.period.nil?
@@ -19,11 +20,11 @@ class Occurrence < ApplicationRecord
         return false if !self.inf_recur? && time > self.end_time
         return false if time < self.start_time
         time_diff = time - self.start_time
-        period = if self.one_time? 
-                 then time_diff
-                 else Time.at(time_diff.to_i % self.period.to_i)
+        offset = if self.one_time? 
+                 then time_diff.to_i
+                 else time_diff.to_i % self.period.to_i
                  end
-        return time_diff <= self.duration
+        return offset <= self.duration
     end
     def occurring?
         return self.occurs_on?(Time.now)
@@ -51,10 +52,7 @@ class Occurrence < ApplicationRecord
         # assert(self.one_time? || self.period == 1.week)
         # assert(o.one_time? || o.period == 1.week)
         # assert(self.duration < 1.day && o.duration < 1.day)
-        # puts(self.start_time)
-        # puts(self.end_time)
-        # puts(o.start_time)
-        # puts(o.end_time)
+        
         return false if !self.inf_recur? && !o.inf_recur? &&
                         (self.start_time > o.end_time || 
                         o.start_time > self.end_time)
@@ -67,18 +65,10 @@ class Occurrence < ApplicationRecord
     private
     def duration_is_shorter_than_period
         return true if self.one_time?
-        errors.add(:occurrence, "Duration must be smaller than period") if self.duration >= self.period
+        errors.add(:occurrence, "Duration must be smaller than period") if self.duration > self.period
     end
-    # one_time_occurrence should have nil period
     def one_time_occurrence
         return true unless self.one_time?
         errors.add(:occurrence, "One time event must have 1 count") if self.count.nil? || self.count != 1
-    end
-    def recurring_occurrences_are_disjoint
-        return true if self.one_time? || self.schedule.nil?
-        other_occurrences = self.schedule.occurrences.filter{|o|o.id != self.id}
-        if other_occurrences.any?{|o|o.overlapping?(self)}
-            errors.add(:occurrence, "Occurrences must be disjoint")
-        end 
     end
 end

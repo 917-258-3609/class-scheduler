@@ -3,5 +3,5 @@ class Course < ApplicationRecord
     belongs_to :teacher
     has_one :schedule
     belongs_to :subject_level
-    has_toggleable_attr(:active)
+    has_toggled_attr(:active)
 end

@@ -19,8 +19,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_30_144908) do
     t.string "location"
     t.string "comment"
     t.boolean "is_active"
+    t.bigint "teacher_id"
+    t.bigint "subject_level_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["subject_level_id"], name: "index_courses_on_subject_level_id"
+    t.index ["teacher_id"], name: "index_courses_on_teacher_id"
   end
 
   create_table "occurrences", force: :cascade do |t|
@@ -35,8 +39,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_30_144908) do
   end
 
   create_table "schedules", force: :cascade do |t|
-    t.string "scheduleable_type", null: false
-    t.bigint "scheduleable_id", null: false
+    t.string "scheduleable_type"
+    t.bigint "scheduleable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["scheduleable_type", "scheduleable_id"], name: "index_schedules_on_scheduleable"

@@ -4,5 +4,6 @@ FactoryBot.define do
     count { 1 }
     period { 1.week }
     duration { 1.hour }
+    schedule
   end
 end
