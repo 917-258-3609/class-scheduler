@@ -1,7 +1,7 @@
 class Student < ApplicationRecord
-    has_and_belongs_to_many :courses
-    has_one :schedule
-    has_one :user
+    has_and_belongs_to_many :courses, optional: true
+    has_one :schedule, as: :scheduleable, dependent: :destroy
+    has_one :user, as: :accountable, dependent: :destroy
 
     validates_presence_of :schedule
     validates_presence_of :user

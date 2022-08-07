@@ -1,7 +1,16 @@
 require "test_helper"
 
 class TeacherTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  context "teachers" do
+    setup do
+      create_subject_levels
+      create_teachers
+    end
+    # teardown do
+    #   destroy_teachers
+    #   destroy_subject_levels
+    # end
+    should "create and destroy teachers" do
+    end
+  end
 end

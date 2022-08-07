@@ -7,9 +7,9 @@ class OccurrenceTest < ActiveSupport::TestCase
     setup do
       create_occurrences
     end
-    teardown do
-      destroy_occurrences
-    end
+    # teardown do
+    #   destroy_occurrences
+    # end
     should "have overlapping? method that detect if two occurrences overlaps" do
       assert_overlapping(@every_monday_1400_3, @every_monday_1400_inf)
       assert_overlapping(@every_monday_1400_3, @monday_1400)

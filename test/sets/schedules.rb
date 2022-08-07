@@ -5,6 +5,8 @@ module ConstructionHelper
       @regular_math_schedule = FactoryBot.create(:schedule)
       @regular_english_1_schedule = FactoryBot.create(:schedule)
       @regular_english_2_schedule = FactoryBot.create(:schedule)
+      @nobel_science_schedule = FactoryBot.create(:schedule)
+
       @lucifer_pref_schedule = FactoryBot.create(:schedule)
       @empty_schedule = FactoryBot.create(:schedule)
     end

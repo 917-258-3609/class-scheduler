@@ -1,10 +1,11 @@
 FactoryBot.define do
   factory :course do
-    fee { "9.99" }
+    fee { 9.99 }
     location { "Zoom" }
-    comment { "Special 1 to 1 olympiad level math class" }
+    comment { "#{subject_level.level_name} level #{subject_level.subject} class taught by #{teacher.name}" }
     is_active { true }
     teacher
     subject_level
+    schedule
   end
 end

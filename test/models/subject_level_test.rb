@@ -1,7 +1,14 @@
 require "test_helper"
 
 class SubjectLevelTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  context "subject_levels" do
+    setup do
+      create_subject_levels
+    end
+    # teardown do
+    #   destroy_subject_levels
+    # end
+    should "create and destroy subject_levels" do
+    end
+  end
 end

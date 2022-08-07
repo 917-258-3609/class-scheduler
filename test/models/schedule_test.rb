@@ -7,10 +7,10 @@ class ScheduleTest < ActiveSupport::TestCase
       create_schedules
       create_occurrences
     end
-    teardown do
-      destroy_occurrences
-      destroy_schedules
-    end
+    # teardown do
+    #   destroy_occurrences
+    #   destroy_schedules
+    # end
     should "have overlapping? to determine if 2 schedule overlaps" do
       assert_overlapping(@lucifer_pref_schedule, @olympiad_math_schedule)
       assert_not_overlapping(@olympiad_math_schedule, @regular_english_1_schedule)

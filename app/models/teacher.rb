@@ -1,8 +1,8 @@
 class Teacher < ApplicationRecord
-    has_and_belongs_to_many :subject_level
-    has_many :courses
-    has_one :schedule
-    has_one :user
+    has_and_belongs_to_many :subject_levels
+    has_many :courses, dependent: :destroy
+    has_one :schedule, as: :scheduleable, dependent: :destroy
+    has_one :user, as: :accountable, dependent: :destroy
     
     validates_presence_of :user
     validates_presence_of :schedule

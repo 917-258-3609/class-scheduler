@@ -16,6 +16,9 @@ module ConstructionHelper
       @every_tuesday_1400_20 = FactoryBot.create(:occurrence, 
         schedule: @regular_english_1_schedule, start_time: "2022-08-02 14:00:00", count: 20
       )
+      @every_wednesday_1500_20 = FactoryBot.create(:occurrence, 
+        schedule: @nobel_science_schedule, start_time: "2022-08-03 15:00:00", count: 20
+      )
       @every_tuesday_1500_20 = FactoryBot.create(:occurrence, 
         schedule: @regular_english_2_schedule, start_time: "2022-08-02 15:00:00", count: 20
       )
