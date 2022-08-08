@@ -47,10 +47,23 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
 
 # Use Sass to process CSS
-# gem "sassc-rails"
+gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+
+# Use Simple Calendar to display calendar
+gem "simple_calendar"
+
+# Use Combine Time Select to pass and parse time fields
+# gem "combined_time_select"
+
+# Use Chronic Duration to parse time strings
+gem "chronic_duration"
+
+# Material CSS
+gem "materialize-sass"
+gem "material_icons"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -1,0 +1,25 @@
+<%= form_with(model: schedule) do |form| %>
+  <% if schedule.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
+      <ul>
+        <% schedule.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= fields_for :occurrence do |o_form| %>
+    <%= o_form.label :start_time, "Start time"%>
+    <%= o_form.datetime_field :start_time%><br/>
+    <%= o_form.label :count, "Number of lessons"%>
+    <%= o_form.text_field :count%><br/>
+    <%= o_form.label :duration, "Class length"%>
+    <%= o_form.time_field :duration, value: "00:00" %><br/>
+    <%= o_form.hidden_field :period, value: 1.week%>
+  <% end %>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

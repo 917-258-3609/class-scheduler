@@ -1,4 +1,6 @@
+require "./app/helpers/occurrences_helper"
 class Occurrence < ApplicationRecord
+    include OccurrencesHelper
     # TODO: Merge occurrence counting together
     Duration = ActiveSupport::Duration
 
@@ -31,9 +33,9 @@ class Occurrence < ApplicationRecord
     end
     def occurred_count(time=Time.now)
         return 0 if time < self.start_time
-        return 1 if self.one_time?
+        return 1 if self.one_time? || time == self.start_time
         return self.count if !self.end_time.nil? && time > self.end_time
-        return ((time - self.start_time) / self.period).floor + 1
+        return ((time - self.start_time) / self.period).ceil
     end
     def next_occurring_time(time=Time.now)
         return self.start_time if time < self.start_time
@@ -44,7 +46,7 @@ class Occurrence < ApplicationRecord
     end
     def end_time
         return nil if self.inf_recur?
-        recur_duration = self.one_time? ? 0 : self.period * self.count
+        recur_duration = self.one_time? ? 0 : self.period * (self.count-1)
         return self.start_time + recur_duration + self.duration
     end
     def overlapping?(o)
@@ -61,6 +63,22 @@ class Occurrence < ApplicationRecord
 
         start_diff = s_period_time - o_period_time
         return o.duration > start_diff && start_diff > (-self.duration)
+    end
+    def calendar_occurrences_in(start_time, end_time, schedule)
+        res = []
+        return res if end_time < self.start_time || (!self.inf_recur? && self.end_time <= start_time)
+        if self.one_time?
+            res << CalendarOccurrence.new(self.start_time, self.end_time, schedule)
+        else
+            i = self.next_occurring_time(start_time)
+            c = occurred_count(i)
+            while i < end_time && c <= self.count
+                res << CalendarOccurrence.new(i, i+self.duration,schedule)
+                i += self.period
+                c += 1
+            end
+        end
+        return res
     end
     private
     def duration_is_shorter_than_period
