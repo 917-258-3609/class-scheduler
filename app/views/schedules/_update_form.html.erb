@@ -1,0 +1,20 @@
+<%= form_with(model: schedule) do |form| %>
+  <% if schedule.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(schedule.errors.count, "error") %> prohibited this schedule from being saved:</h2>
+      <ul>
+        <% schedule.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <%= form.label :ftime, "Moving from: "%>
+  <%= form.datetime_field :ftime%><br/>
+  <%= form.label :ttime, "Moving to: "%>
+  <%= form.datetime_field :ttime%><br/>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

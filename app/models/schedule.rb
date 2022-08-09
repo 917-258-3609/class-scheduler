@@ -7,7 +7,7 @@ class Schedule < ApplicationRecord
   scope :for_course, ->{ where(scheduleable_type: "Course") }
 
   def occurs_on?(time)
-    self.occurrences.all.any?{|x|x.occurs_on?(time)} 
+    self.occurrences.all.any?{|x|!!x.occurs_on(time)} 
   end
   def occurring?
     self.occurs_on?(Time.now)
@@ -24,9 +24,40 @@ class Schedule < ApplicationRecord
   def overlapping?(s)
     return self.occurrences.all.any?{|my_o|s.occurrences.all.any?{|s_o| my_o.overlapping?(s_o)}}
   end
+
   def calendar_occurrences_in(start_time, end_time)
     return self.occurrences.all.map{|o|o.calendar_occurrences_in(start_time, end_time, self)}.flatten 
   end
+  def occurrence_at(time)
+    return self.occurrences.generally_occurs_on(time).filter{|o|o.occurs_on?(time)}.first
+  end
+  # TODO: handle when ttime < ftime
+  def move_one(ftime, ttime)
+    return false if self.occurs_on?(ttime)
+    o = self.occurrence_at(ftime)
+    return false if o.nil?
+    current_o = Occurrence.new(
+      start_time: ttime,
+      count: 1,
+      period: nil,
+      duration: o.duration,
+      schedule: self 
+    )
+    
+    if !o.one_time?
+      current_start_time = o.start_time+((ftime-o.start_time)/o.period).floor*o.period
+      past_o = o.build_occurrence_before(ftime)
+      future_o = o.build_occurrence_after(current_start_time+o.period)
+    end
+    Occurrence.transaction do
+      o.delete
+      current_o.save!
+      past_o.save! if past_o
+      future_o.save! if future_o
+    end
+
+  end
+
   def teacher
     scheduleable if scheduleable.is_a? Teacher
   end

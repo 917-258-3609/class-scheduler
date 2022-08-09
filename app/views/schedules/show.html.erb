@@ -4,7 +4,7 @@
 <% if @next_occurring_time.nil? %>
   <h4>Past Event</h4> 
 <% else %>
-  <h4>Next Occurrence: </h4><%= @schedule.next_occurring_time.to_s %>
+  <h4>Next Occurrence: </h4><%= @next_occurring_time %>
 <% end %>
 <div>
   <%= link_to "Edit this schedule", edit_schedule_path(@schedule) %> |

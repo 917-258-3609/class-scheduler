@@ -52,7 +52,14 @@ class ScheduleTest < ActiveSupport::TestCase
       assert(!@regular_english_2_schedule.valid?)
       assert(!@testing_occurrence.valid?)
     end
-    
+    should "have move one method that moves one occurrence" do
+      ftime = Time.parse("2022-08-08 14:00:00 UTC")
+      ttime = Time.parse("2022-08-11 14:00:00 UTC")
+      assert(@lucifer_pref_schedule.occurrence_at(ftime))
+      assert(@lucifer_pref_schedule.move_one(ftime, ttime))
+      assert(!@lucifer_pref_schedule.occurs_on?(ftime))
+      assert(@lucifer_pref_schedule.occurs_on?(ttime))
+    end
   end
   private
   def assert_overlapping(o1, o2)

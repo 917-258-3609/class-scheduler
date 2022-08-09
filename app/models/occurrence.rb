@@ -4,51 +4,73 @@ class Occurrence < ApplicationRecord
     # TODO: Merge occurrence counting together
     Duration = ActiveSupport::Duration
 
+    # Association
     belongs_to :schedule, optional: true
     
+    # Validation
     validates :duration, presence: true, comparison: {other_than: 0}
     validates :period, allow_nil: true, comparison: {other_than: 0}
     validate :duration_is_shorter_than_period
     validate :one_time_occurrence
     validates_associated :schedule
 
+    # Scope
+    scope :generally_occurs_on, ->(time) {
+        where("start_time <= ? AND (? <= end_time OR end_time IS NULL)", time, time)
+    }
+    
+    # Callback
+    before_validation(on: [:create, :update]) do
+        if self.inf_recur?
+            self.end_time = nil 
+        else
+            recur_duration = (self.period || 0) * (self.count-1)
+            self.end_time = self.start_time + recur_duration + self.duration
+        end
+    end
+
     def one_time?
         return self.period.nil?
     end
     def inf_recur?
         return self.count.nil?
+    end 
+
+    def occurs_on(time)
+        return nil if !self.inf_recur? && time > self.end_time
+        return nil if time < self.start_time
+        time_diff = time - self.start_time
+        if self.one_time? 
+            offset = time_diff.to_i
+        else 
+            offset = time_diff.to_i % self.period.to_i
+        end
+        return self if offset <= self.duration
     end
     def occurs_on?(time)
-        return false if !self.inf_recur? && time > self.end_time
-        return false if time < self.start_time
-        time_diff = time - self.start_time
-        offset = if self.one_time? 
-                 then time_diff.to_i
-                 else time_diff.to_i % self.period.to_i
-                 end
-        return offset <= self.duration
+        return !!self.occurs_on(time)
+    end
+    def occurring
+        return self.occurs_on(Time.now)
     end
     def occurring?
-        return self.occurs_on?(Time.now)
+        return !!self.occurring
     end
+    
     def occurred_count(time=Time.now)
         return 0 if time < self.start_time
         return 1 if self.one_time? || time == self.start_time
         return self.count if !self.end_time.nil? && time > self.end_time
-        return ((time - self.start_time) / self.period).ceil
+        return ((time - self.start_time) / self.period).floor + 1
     end
     def next_occurring_time(time=Time.now)
         return self.start_time if time < self.start_time
-        return time if self.occurs_on?(time)
+        return time if self.occurs_on(time)
         return nil if self.occurred_count(time) == self.count
-        period_cnt = ((time - self.start_time)/(self.period)).ceil
+        period_cnt = ((time - self.start_time)/(self.period)).floor + 1
         return self.start_time + period_cnt*self.period
-    end
-    def end_time
-        return nil if self.inf_recur?
-        recur_duration = self.one_time? ? 0 : self.period * (self.count-1)
-        return self.start_time + recur_duration + self.duration
-    end
+    end 
+
     def overlapping?(o)
         # TODO: throw error here instead
         # assert(self.one_time? || self.period == 1.week)
@@ -80,6 +102,37 @@ class Occurrence < ApplicationRecord
         end
         return res
     end
+    def build_occurrence_before(time)
+        cnt = self.occurred_count(time)
+        cnt -= 1 if self.occurs_on?(time)
+        return nil if cnt <= 0
+        return Occurrence.new(
+            start_time: self.start_time,
+            count: cnt,
+            period: (cnt == 1 ? nil : self.period),
+            duration: self.duration,
+            schedule: self.schedule
+        )
+    end
+    def build_occurrence_after(time)
+        occurred_count = self.occurred_count(time)
+        occurred_count -= 1 if self.occurs_on?(time)
+        
+        cnt = self.count && self.count - occurred_count
+        return nil if cnt && cnt <= 0
+
+        start_time = self.start_time + occurred_count * self.period
+        return Occurrence.new(
+            start_time: start_time,
+            count: cnt,
+            period: (cnt && cnt == 1 ? nil : self.period),
+            duration: self.duration,
+            schedule: self.schedule
+        )
+    end
+
+
+
     private
     def duration_is_shorter_than_period
         return true if self.one_time?
