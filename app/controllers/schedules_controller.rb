@@ -15,7 +15,7 @@ class SchedulesController < ApplicationController
 
   # GET /schedules/1 or /schedules/1.json
   def show
-    @next_occurring_time = @schedule.next_occurring_time.localtime
+    @next_occurring_time = @schedule.next_occurring_time
     puts(@next_occurring_time)
   end
 

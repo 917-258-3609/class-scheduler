@@ -16,7 +16,6 @@ class Schedule < ApplicationRecord
     self.occurrences.all.map{|o|o.occurred_count(time)}.sum
   end
   def next_occurring_time(time=Time.now)
-    # TODO: handle if schedule is empty
     return nil if self.occurrences.all.empty?
     next_occurrence = self.occurrences.all.map{|o|o.next_occurring_time(time)}.compact.min
     return next_occurrence
