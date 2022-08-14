@@ -1,0 +1,9 @@
+<%= simple_form_for student do |f| %>
+  <%= f.simple_fields_for student.user do |u|%>
+    <%= u.input :email, as: :email%>
+    <%= u.hidden_field :is_active, value: true %>
+  <% end %>
+  <%= f.input :first_name %>
+  <%= f.input :last_name %>
+  <%= f.button :submit %>
+<% end %>
