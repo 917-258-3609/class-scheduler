@@ -1,5 +1,7 @@
 require "chronic_duration"
+require "./app/helpers/occurrences_helper"
 class SchedulesController < ApplicationController
+  include OccurrencesHelper
   before_action :set_schedule, only: %i[ show edit update destroy ]
 
   # GET /schedules or /schedules.json
@@ -10,7 +12,12 @@ class SchedulesController < ApplicationController
     btime = start_date.beginning_of_month.beginning_of_week.beginning_of_day
     etime = start_date.end_of_month.end_of_week.end_of_day
 
-    @calendar_occurrences = Schedule.all.map{|s| s.calendar_occurrences_in(btime, etime)}.flatten
+    @calendar_occurrences = \
+      Schedule.all.map{|s| 
+        s.occurrences_between(btime, etime).map{|o|
+          CalendarOccurrence.new(o, s)
+        }
+      }.flatten
   end
 
   # GET /schedules/1 or /schedules/1.json
@@ -31,12 +38,14 @@ class SchedulesController < ApplicationController
   # POST /schedules or /schedules.json
   def create
     o_params = occurrence_params
+    start_time = Time.parse(o_params["start_time"]).utc
     @schedule = Schedule.new()
     @occurrence = Occurrence.new(
-      start_time: DateTime.parse(o_params["start_time"]), 
+      start_time: start_time, 
       duration: ActiveSupport::Duration.build(ChronicDuration.parse(o_params["duration"])),
+      days: [start_time.wday],
       count: o_params["count"].to_i,
-      period: ActiveSupport::Duration.build(o_params["period"].to_i),
+      period: ActiveSupport::Duration.build(o_params["period"].to_i)
     )
     respond_to do |format|
       if @schedule.valid? && @occurrence.valid?
@@ -56,8 +65,8 @@ class SchedulesController < ApplicationController
   def update
     respond_to do |format|
       p = moving_params
-      ftime = Time.parse(p[:ftime])
-      ttime = Time.parse(p[:ttime])
+      ftime = Time.parse(p[:ftime]).utc
+      ttime = Time.parse(p[:ttime]).utc
       puts(ftime)
       puts(ttime)
       if @schedule.move_one(ftime, ttime)

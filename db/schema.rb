@@ -37,9 +37,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_08_223705) do
   create_table "occurrences", force: :cascade do |t|
     t.datetime "start_time"
     t.integer "count"
+    t.integer "days", array: true
     t.interval "period"
     t.interval "duration"
     t.bigint "schedule_id"
+    t.jsonb "ice_cube_b"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "end_time"

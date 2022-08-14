@@ -55,11 +55,17 @@ gem "sassc-rails"
 # Use Simple Calendar to display calendar
 gem "simple_calendar"
 
+# Use Simple Form to display form
+gem "simple_form"
+
 # Use Combine Time Select to pass and parse time fields
 # gem "combined_time_select"
 
 # Use Chronic Duration to parse time strings
 gem "chronic_duration"
+
+# Use Ice Cube to handle recurrence
+gem "ice_cube"
 
 # Material CSS
 gem "materialize-sass"

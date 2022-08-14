@@ -1,8 +1,6 @@
 require "test_helper"
 
 class OccurrenceTest < ActiveSupport::TestCase
-  should belong_to(:schedule).optional
-  
   context "occurrences" do
     setup do
       create_occurrences
@@ -43,7 +41,7 @@ class OccurrenceTest < ActiveSupport::TestCase
       period = subject.period
 
       assert_equal(start_time, subject.next_occurring_time(start_time))
-      assert_equal(start_time+1.hour, subject.next_occurring_time(start_time+1.hour))
+      assert_equal(start_time+1.week, subject.next_occurring_time(start_time+1.hour))
       assert_equal(start_time+30.minutes, subject.next_occurring_time(start_time+30.minutes))
       assert_equal(start_time, subject.next_occurring_time(start_time - 1.hour))
       assert_equal(start_time + period, subject.next_occurring_time(start_time + 2.hour))
@@ -67,7 +65,7 @@ class OccurrenceTest < ActiveSupport::TestCase
       period = subject.period
 
       assert_equal(start_time, subject.next_occurring_time(start_time))
-      assert_equal(start_time+1.hour, subject.next_occurring_time(start_time+1.hour))
+      assert_equal(start_time+30.minutes, subject.next_occurring_time(start_time+30.minutes))
       assert_equal(start_time,subject.next_occurring_time(start_time - 1.hour))
       assert_equal(start_time + 3*period,
                    subject.next_occurring_time(start_time + 2*period+2.hour))
@@ -88,8 +86,8 @@ class OccurrenceTest < ActiveSupport::TestCase
       period = subject.period
 
       assert_equal(start_time, subject.next_occurring_time(start_time))
-      assert_equal(start_time+1.hour, subject.next_occurring_time(start_time+1.hour))
       assert_equal(start_time, subject.next_occurring_time(start_time - 1.hour))
+      assert_nil(subject.next_occurring_time(start_time+1.hour))
       assert_nil(subject.next_occurring_time(start_time + 2.hour))
     end
     should "have disjoint occurrence" do

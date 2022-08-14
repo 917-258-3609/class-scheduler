@@ -24,22 +24,22 @@ class ScheduleTest < ActiveSupport::TestCase
       assert(!@empty_schedule.occurs_on?(Time.now))
     end
     should "have occurred_count to determine the occurred count" do
-      assert_equal(1, @olympiad_math_schedule.occurred_count(Time.parse "2022-07-22 15:00:00 UTC"))
-      assert_equal(2, @olympiad_math_schedule.occurred_count(Time.parse "2022-07-28 15:00:00 UTC"))
-      assert_equal(3, @olympiad_math_schedule.occurred_count(Time.parse "2022-08-03 15:00:00 UTC"))
+      assert_equal(1, @olympiad_math_schedule.occurred_count(Time.parse "2022-07-22 15:00:00"))
+      assert_equal(2, @olympiad_math_schedule.occurred_count(Time.parse "2022-07-28 15:00:00"))
+      assert_equal(3, @olympiad_math_schedule.occurred_count(Time.parse "2022-08-03 15:00:00"))
     end
     should "have next_occurrence to determine the next occurrence in a schedule" do
-      assert_equal((Time.parse "2022-07-19 15:00:00 UTC"), 
-        @olympiad_math_schedule.next_occurring_time(Time.parse "2022-07-19 14:00:00 UTC")
+      assert_equal((Time.parse "2022-07-19 15:00:00"), 
+        @olympiad_math_schedule.next_occurring_time(Time.parse "2022-07-19 14:00:00")
       )
-      assert_equal((Time.parse "2022-08-01 14:00:00 UTC"), 
-        @olympiad_math_schedule.next_occurring_time(Time.parse "2022-07-28 19:00:00 UTC")
+      assert_equal((Time.parse "2022-08-01 14:00:00"), 
+        @olympiad_math_schedule.next_occurring_time(Time.parse "2022-07-28 19:00:00")
       )
     end
     should "not allow overlapping occurrences in same schedule" do
       assert(@lucifer_pref_schedule.valid?)
       @testing_occurrence = FactoryBot.create(:occurrence, 
-        schedule: @lucifer_pref_schedule, start_time: "2022-08-01 14:30:00", count: 3
+        schedule: @lucifer_pref_schedule, start_time_s: "2022-08-01 14:30:00", count: 3
       )
       assert_overlapping(@testing_occurrence, @every_monday_1400_inf)
       assert(!@lucifer_pref_schedule.valid?)
@@ -47,14 +47,14 @@ class ScheduleTest < ActiveSupport::TestCase
       @testing_occurrence.delete
 
       @testing_occurrence = FactoryBot.create(:occurrence, 
-        schedule: @regular_english_2_schedule, start_time: "2022-08-01 14:30:00", period: nil
+        schedule: @regular_english_2_schedule, start_time_s: "2022-08-01 14:30:00"
       )
       assert(!@regular_english_2_schedule.valid?)
       assert(!@testing_occurrence.valid?)
     end
     should "have move one method that moves one occurrence" do
-      ftime = Time.parse("2022-08-08 14:00:00 UTC")
-      ttime = Time.parse("2022-08-11 14:00:00 UTC")
+      ftime = Time.parse("2022-08-08 14:00:00")
+      ttime = Time.parse("2022-08-11 14:00:00")
       assert(@lucifer_pref_schedule.occurrence_at(ftime))
       assert(@lucifer_pref_schedule.move_one(ftime, ttime))
       assert(!@lucifer_pref_schedule.occurs_on?(ftime))

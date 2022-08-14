@@ -6,8 +6,11 @@ class Schedule < ApplicationRecord
 
   scope :for_course, ->{ where(scheduleable_type: "Course") }
 
+  def inf_recur?
+    !self.occurrences.inf_recur.empty?
+  end
   def occurs_on?(time)
-    self.occurrences.all.any?{|x|!!x.occurs_on(time)} 
+    self.occurrences.all.any?{|x|x.occurs_on?(time)} 
   end
   def occurring?
     self.occurs_on?(Time.now)
@@ -24,37 +27,41 @@ class Schedule < ApplicationRecord
     return self.occurrences.all.any?{|my_o|s.occurrences.all.any?{|s_o| my_o.overlapping?(s_o)}}
   end
 
-  def calendar_occurrences_in(start_time, end_time)
-    return self.occurrences.all.map{|o|o.calendar_occurrences_in(start_time, end_time, self)}.flatten 
+  def occurrences_between(start_time, end_time)
+    return self.occurrences.all.map{|o|o.occurrences_between(start_time, end_time)}.flatten 
   end
   def occurrence_at(time)
-    return self.occurrences.generally_occurs_on(time).filter{|o|o.occurs_on?(time)}.first
+    return self.occurrences.all.filter{|o|o.occurs_on?(time)}.first
   end
-  # TODO: handle when ttime < ftime
-  def move_one(ftime, ttime)
-    return false if self.occurs_on?(ttime)
-    o = self.occurrence_at(ftime)
-    return false if o.nil?
-    current_o = Occurrence.new(
-      start_time: ttime,
-      count: 1,
-      period: nil,
-      duration: o.duration,
-      schedule: self 
+  def last_extended_recurrence(time) 
+    recurrences = self.occurrences.all
+    return nil if recurrences.any?{|o|o.inf_recur?}
+    min_hash = recurrences
+      .map{|r|{arg: r, val: r.extended_occurring_time}}
+      .reduce{|h1, h2| h1.val < h2.val ? h1 : h2}
+    return min_hash[:arg]
+  end
+  def create_recurrence(time, count, days, period, duration)
+    return Occurrence.create(
+      start_time: time,
+      count: count,
+      days: days,
+      period: period,
+      duration: duration,
+      schedule: self
     )
-    
-    if !o.one_time?
-      current_start_time = o.start_time+((ftime-o.start_time)/o.period).floor*o.period
-      past_o = o.build_occurrence_before(ftime)
-      future_o = o.build_occurrence_after(current_start_time+o.period)
-    end
-    Occurrence.transaction do
-      o.delete
-      current_o.save!
-      past_o.save! if past_o
-      future_o.save! if future_o
-    end
-
+  end
+  def move_one(ftime, ttime)
+    return false if !(o = occurrence_at(ftime))
+    return o.move_occurrence(ftime, ttime)
+  end
+  def postpone(time)
+    return false if !(o = occurrence_at(time))
+    return o.delete_occurrence(time) && self.extend_one
+  end
+  def extend_one
+    return true if !(o = self.last_extended_recurrence)
+    return o.extend_recurrence
   end
 
   def teacher
