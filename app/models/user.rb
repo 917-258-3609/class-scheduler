@@ -2,6 +2,7 @@ class User < ApplicationRecord
     belongs_to :accountable, polymorphic: true, optional: true
     
     validates_presence_of :email
+    validates_uniqueness_of :email, case_sensitive: false
     validates_format_of :email, with: URI::MailTo::EMAIL_REGEXP
     
     def teacher

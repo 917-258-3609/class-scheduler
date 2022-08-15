@@ -1,0 +1,5 @@
+<h3><%= "#{@teacher.name}" %></h3>
+<% @teacher.subject_levels.each do |l| %>
+    <p><%= l.to_s %></p>
+<% end %>
+<%= link_to "All teacher", teachers_path %>

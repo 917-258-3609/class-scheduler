@@ -11,6 +11,16 @@
   </head>
 
   <body>
+    <nav>
+      <div class="nav-wrapper">
+        <ul id="nav-mobile" class="left hide-on-med-and-down">
+          <li><%=link_to "Teachers", teachers_path%></li>
+          <li><%=link_to "Students", students_path%></li>
+          <li><%=link_to "Schedules", schedules_path%></li>
+        </ul>
+      </div>
+    </nav>
+  
     <div class="container">
       <%= yield %>
     </div>
