@@ -5,9 +5,9 @@
   <% end %>
   <%= f.input :name %>
   <%= f.simple_fields_for :level do |n|%>
-    <% subject_levels.each do |s|%>
+    <% levels.each do |s|%>
       <% s_sym = s[0].subject.to_sym%>
-      <%= n.input s_sym, collection: s, required: false%>
+      <%= n.input s_sym, label_method: :level_name, collection: s, required: false %>
     <% end %>
   <% end %>
   <%= f.button :submit %>

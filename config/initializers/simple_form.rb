@@ -63,9 +63,24 @@ SimpleForm.setup do |config|
     #
     # b.use :full_error, wrap_with: { tag: :span, class: :error }
   end
+  config.wrappers :materialize, class: :'input-field',
+                                hint_class: :field_with_hint, 
+                                error_class: :field_with_errors, 
+                                valid_class: :field_without_errors do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.use :label_input
+    b.use :hint,  wrap_with: { tag: :span, class: :hint }
+    b.use :error, wrap_with: { tag: :span, class: :error }
+  end
 
   # The default wrapper to be used by the FormBuilder.
-  config.default_wrapper = :default
+  config.default_wrapper = :materialize
 
   # Define the way to render check boxes / radio buttons with labels.
   # Defaults to :nested for bootstrap config.

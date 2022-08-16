@@ -54,7 +54,8 @@ class TeachersController < ApplicationController
         end
       end
     rescue ActiveRecord::RecordInvalid
-      render :new, status: :unprocessable_entity
+      @subject_levels = SubjectLevel.subjects.map{|s|SubjectLevel.for_subject(s)}
+      render :edit, status: :unprocessable_entity
       flash[:error] = @teacher.errors.full_messages.to_sentence + 
                       @user.errors.full_messages.to_sentence
     else
@@ -70,6 +71,7 @@ class TeachersController < ApplicationController
   private
   def set_teacher
     @teacher = Teacher.find(params[:id])
+    @user = @teacher.user
   end
   def teacher_params
     params.require(:teacher).permit(:name)
