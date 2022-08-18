@@ -8,6 +8,10 @@ class Teacher < ApplicationRecord
     validates_presence_of :schedule
     validate :schedule_preference_recur_indefinitely
     validate :schedule_preference_is_weekly
+
+    def teaches?(sl)
+
+    end
     private
     def schedule_preference_is_weekly
         return true if self.schedule.nil?
