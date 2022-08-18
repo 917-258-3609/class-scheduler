@@ -1,0 +1,10 @@
+Running 2 tests in a single process (parallelization threshold is 50)
+Run options: --seed 54615
+
+# Running:
+
+..
+
+Finished in 0.954064s, 2.0963 runs/s, 2.0963 assertions/s.
+2 runs, 2 assertions, 0 failures, 0 errors, 0 skips
+Coverage report generated for Unit Tests to /home/kevin/Projects/ClassScheduler/coverage. 32 / 624 LOC (5.13%) covered.
