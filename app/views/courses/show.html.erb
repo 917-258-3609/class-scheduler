@@ -1,0 +1,7 @@
+<h1>Course</h1>
+
+<ul class="collection">
+  <% @occurrences.each do |o| %>
+    <li class="collection-item"><%= o.start_time%></li>
+  <% end %>
+</ul>

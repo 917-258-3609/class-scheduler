@@ -7,6 +7,9 @@ class Student < ApplicationRecord
     validates_presence_of :user
     validate :schedule_preference_recur_indefinitely
     validate :schedule_preference_is_weekly
+    def name
+        return "#{self.first_name} #{self.last_name}"
+    end
     private
     def schedule_preference_is_weekly
         self.schedule.occurrences.all.all?{|o|o.period == 1.week}

@@ -6,7 +6,7 @@ class SchedulesController < ApplicationController
 
   # GET /schedules or /schedules.json
   def index
-    @schedules = Schedule.all
+    @schedules = Schedule.for_course.all
     start_date = params.fetch(:start_date, Date.today).to_date
 
     btime = start_date.beginning_of_month.beginning_of_week.beginning_of_day
@@ -94,7 +94,6 @@ class SchedulesController < ApplicationController
     def set_schedule
       @schedule = Schedule.find(params[:id])
     end
-
     # Only allow a list of trusted parameters through.
     def occurrence_params
       params.require(:occurrence).permit(:start_time, :count, :duration, :period)

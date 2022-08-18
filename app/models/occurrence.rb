@@ -9,6 +9,7 @@ class Occurrence < ApplicationRecord
   validates :duration, presence: true, comparison: {other_than: 0}
   validates :period, presence: true, comparison: {other_than: 0}
   validate :duration_is_shorter_than_period
+  validate :start_time_is_in_days
   validates_associated :schedule
 
   # Scope
@@ -16,6 +17,9 @@ class Occurrence < ApplicationRecord
   scope :fin_recur, -> { where("count IS NOT NULL") }
 
   # Callback
+  before_validation do
+    self.start_time = self.start_time.utc
+  end
   before_save do 
     self.ice_cube_b = self.ice_cube.to_hash
   end
@@ -91,10 +95,17 @@ class Occurrence < ApplicationRecord
     return @ice_cube
   end
   private
+  # Validations
   def duration_is_shorter_than_period
     errors.add(:occurrence, "Duration must be smaller than period") if \
       self.duration > self.period
   end
+  def start_time_is_in_days
+    return true if self.period != 1.week
+    errors.add(:occurrence, "Start time must be a recurring day") if \
+      !self.days.include?(self.start_time.wday) 
+  end
+
   def intersects?(time)
     return self.ice_cube.occurring_at?(time) ||
            self.ice_cube.occurring_at?(time+self.duration)

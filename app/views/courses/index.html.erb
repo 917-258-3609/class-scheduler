@@ -1,0 +1,15 @@
+<h1>Courses</h1>
+
+<table>
+<tbody>  
+  <% @courses_info.each do |c|%>
+    <tr>
+      <td><%= c[:course].subject_level.to_s %></td>
+      <td><%= c[:next_occurrence] %></td>
+      <td><%= link_to "Details", c[:course] %></td>
+      <td><%= link_to "Edit", edit_course_path(c[:course]) %></td>
+    </tr>
+  <% end %>
+</tbody>  
+</table>
+<%= link_to "New course", new_course_path %>

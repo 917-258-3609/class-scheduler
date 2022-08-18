@@ -1,0 +1,19 @@
+<%= simple_form_for course do |f| %>
+  <%= f.association :subject_level%>
+  <%= f.association :teacher %>
+  <%= f.association :students, include_hidden: false %>
+  <%= f.simple_fields_for :occurrence do |s| %>
+    <%= s.hidden_field :period, value: 1.week%>
+    <%= s.label :start_time, "Start time"%>
+    <%= s.datetime_field :start_time%><br/>
+    <%= s.input :days, 
+                collection: Date::DAYNAMES.each_with_index.map{ |v, i| [v, i]}, 
+                include_hidden: false, 
+                input_html: {multiple: true} 
+    %>
+    <%= s.label :duration, "Class length"%>
+    <%= s.time_field :duration, value: "00:00" %><br/>
+    <%= s.input :count, as: :integer %>
+  <% end %>
+  <%= f.button :submit %>
+<% end %>
