@@ -3,6 +3,7 @@ class SubjectLevelsController < ApplicationController
   # GET /levels/math
   def index
     @subject_levels = SubjectLevel.levels_by_subject
+    puts(@subject_levels)
   end
 
   def new 
@@ -11,8 +12,8 @@ class SubjectLevelsController < ApplicationController
 
   def create 
     @level = SubjectLevel.new(level_params)
-    subject_name = level_params[:subject]
-    @subject = Subject.find_by(name: subject_name) || Subject.new(subject_name)
+    subject_name = params[:subject_level][:subject]
+    @subject = Subject.find_by(name: subject_name) || Subject.new(name: subject_name)
     @level.subject = @subject
 
     if (sl = SubjectLevel.for_subject(@subject).by_rank.last)
@@ -31,14 +32,15 @@ class SubjectLevelsController < ApplicationController
       flash[:error] = @level.errors.full_messages.to_sentence + 
                       @subject.errors.full_messages.to_sentence
     else
-      redirect_to subject_levels_path, notice: "Subject level was successfully created"
+      redirect_to subject_path(@subject), notice: "Subject level was successfully created"
     end
     
   end
   
   def destroy
+    @subject = @level.subject
     if @level.destroy
-      redirect_to subject_levels_path, notice: "Subject level was successfully destroyed"
+      redirect_to subject_path(@subject), notice: "Subject level was successfully destroyed"
     else
       render :new, status: :unprocessable_entity
     end

@@ -11,12 +11,29 @@
   </head>
 
   <body>
+  <ul id="subject-dropdown" class="dropdown-content">
+    <% if @subjects.empty?%>
+      <li><%= link_to "Create Subject", new_subject_level_path %> </li>
+    <% else %>
+      <% @subjects.each do |s| %>
+        <li><%= link_to s.name, subject_path(s) %> </li>
+      <% end %>
+    <% end %>
+  </ul>
     <nav>
       <div class="nav-wrapper">
         <ul id="nav-mobile" class="left hide-on-med-and-down">
           <li><%=link_to "Teachers", teachers_path%></li>
           <li><%=link_to "Students", students_path%></li>
           <li><%=link_to "Courses", courses_path%></li>
+          <li>
+            <a class="dropdown-trigger" href="#!" data-target="subject-dropdown">
+              Subjects
+              <i class="material-icons right">
+                arrow_drop_down
+              </i>
+            </a>
+          </li>
           <li><%=link_to "Schedules", schedules_path%></li>
         </ul>
       </div>
