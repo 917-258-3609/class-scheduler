@@ -10,7 +10,7 @@ class TeachersController < ApplicationController
   def new
     @teacher = Teacher.new
     @teacher.user = User.new
-    @subject_levels = SubjectLevel.subjects.map{|s|SubjectLevel.for_subject(s)}
+    @subject_levels = SubjectLevel.levels_by_subject
   end
 
   def create
@@ -40,7 +40,7 @@ class TeachersController < ApplicationController
   end
 
   def edit
-    @subject_levels = SubjectLevel.subjects.map{|s|SubjectLevel.for_subject(s)}
+    @subject_levels = SubjectLevel.levels_by_subject
   end
 
   def update

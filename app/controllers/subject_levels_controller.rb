@@ -2,7 +2,7 @@ class SubjectLevelsController < ApplicationController
   before_action :set_level, only: %i[ destroy ]
   # GET /levels/math
   def index
-    @subject_levels = SubjectLevel.subjects.map{|s|SubjectLevel.for_subject(s).all}
+    @subject_levels = SubjectLevel.levels_by_subject
   end
 
   def new 
@@ -11,17 +11,27 @@ class SubjectLevelsController < ApplicationController
 
   def create 
     @level = SubjectLevel.new(level_params)
-    subject = level_params[:subject]
+    subject_name = level_params[:subject]
+    @subject = Subject.find_by(name: subject_name) || Subject.new(subject_name)
+    @level.subject = @subject
 
-    if (sl = SubjectLevel.for_subject(subject).by_rank.last)
+    if (sl = SubjectLevel.for_subject(@subject).by_rank.last)
       @level.level = sl.level+1
     else
       @level.level = 0
     end
-    if @level.save
-      redirect_to subject_levels_path, notice: "Subject level was successfully created"
-    else
+
+    begin 
+      ActiveRecord::Base.transaction do
+        @subject.save! if !Subject.exists?(@subject.id)
+        @level.save!
+      end
+    rescue ActiveRecord::RecordInvalid
       render :new, status: :unprocessable_entity
+      flash[:error] = @level.errors.full_messages.to_sentence + 
+                      @subject.errors.full_messages.to_sentence
+    else
+      redirect_to subject_levels_path, notice: "Subject level was successfully created"
     end
     
   end
@@ -38,6 +48,6 @@ class SubjectLevelsController < ApplicationController
     @level = SubjectLevel.find(params[:id])
   end
   def level_params
-    params.require(:subject_level).permit(:subject, :level_name)
+    params.require(:subject_level).permit(:level_name)
   end
 end

@@ -4,7 +4,7 @@
   <p>No subject avaliable</p>
 <% end %>
 <% @subject_levels.each do |s| %>
-  <h5><%= s[0].subject %></h5>
+  <h5><%= s[0].subject.name %></h5>
   <table>
   <tbody>  
       <% s.each do |l| %>

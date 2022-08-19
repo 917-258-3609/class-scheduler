@@ -6,7 +6,7 @@
   <%= f.input :name %>
   <%= f.simple_fields_for :level do |n|%>
     <% levels.each do |s|%>
-      <% s_sym = s[0].subject.to_sym%>
+      <% s_sym = s[0].subject.name.to_sym%>
       <%= n.input s_sym, label_method: :level_name, collection: s, required: false %>
     <% end %>
   <% end %>
