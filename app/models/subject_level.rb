@@ -1,9 +1,12 @@
 class SubjectLevel < ApplicationRecord
+    include RailsSortable::Model
+
     has_and_belongs_to_many :teachers
     belongs_to :subject
-    
+    set_sortable :level, without_validations: true
+
     scope :for_subject, ->(subject){ where(subject: subject) }
-    scope :by_rank, ->{ order(:level) }
+    scope :by_level, ->{ order(:level) }
 
     validates :level, uniqueness: { scope: :subject }
     validates :level_name, uniqueness: { scope: :subject }

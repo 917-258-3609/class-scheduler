@@ -16,7 +16,7 @@ class SubjectLevelsController < ApplicationController
     @subject = Subject.find_by(name: subject_name) || Subject.new(name: subject_name)
     @level.subject = @subject
 
-    if (sl = SubjectLevel.for_subject(@subject).by_rank.last)
+    if (sl = SubjectLevel.for_subject(@subject).by_level.last)
       @level.level = sl.level+1
     else
       @level.level = 0

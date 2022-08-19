@@ -1,7 +1,7 @@
 class SubjectsController < ApplicationController
   before_action :set_subject, only: [ :show ]
   def show
-    @levels = @subject.subject_levels.all
+    @levels = @subject.subject_levels.by_level
   end
 
   def destroy
