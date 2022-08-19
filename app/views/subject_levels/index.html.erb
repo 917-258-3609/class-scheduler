@@ -1,23 +1,24 @@
 <p style="color: green"><%= notice %></p>
 
-<% if @subject_levels.empty? %>
+<% if @subject_levels.empty?%>
   <p>No subject avaliable</p>
-<% end %>
-<% @subject_levels.each do |s| %>
-  <h5><%= s[0].subject %></h5>
-  <table>
-  <tbody>  
-      <% s.each do |l| %>
-      <tr>  
-          <td><%= l.level_name %></td>
-          <td><%= l.level %></td>
-          <td>
-            <%= button_to "Delete", l, method: :delete %>
-          </td>
-      </tr>
-      <% end %>
-  </tbody>
-  </table>
+<% else %>
+  <% @subject_levels.each do |s| %>
+    <h5><%= s[0].subject.name %></h5>
+    <table>
+    <tbody>  
+        <% s.each do |l| %>
+        <tr>  
+            <td><%= l.level_name %></td>
+            <td><%= l.level %></td>
+            <td>
+              <%= button_to "Delete", l, method: :delete %>
+            </td>
+        </tr>
+        <% end %>
+    </tbody>
+    </table>
+  <% end %>
 <% end %>
 
 <%= link_to "New subject", new_subject_level_path %>

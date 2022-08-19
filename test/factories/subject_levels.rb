@@ -1,6 +1,9 @@
 FactoryBot.define do
   factory :subject_level do
-    subject { "Math" }
+    transient do
+      subject_name { "Math" } 
+    end
+    subject { association :subject, name: subject_name}
     level { 1 }
     level_name { "Regular" }
   end

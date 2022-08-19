@@ -1,0 +1,16 @@
+<h1><%= @subject.name %></h1>
+<% if @levels.empty?%>
+  <p>No subject avaliable</p>
+<% else %>
+  <table>
+  <tbody class="sortable">  
+    <% @levels.each_with_sortable_id do |l, l_id| %>
+    <tr id="<%= l_id %>">  
+      <td><%= l.level_name %></td>
+      <td><%= link_to "Delete", subject_level_path(l), method: :delete %></td>
+    </tr>
+    <% end %>
+  </tbody>
+  </table>
+<% end %>
+<%= link_to "New subject", new_subject_level_path %>

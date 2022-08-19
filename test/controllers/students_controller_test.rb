@@ -1,38 +1,27 @@
 require "test_helper"
 
 class StudentsControllerTest < ActionDispatch::IntegrationTest
+  setup do 
+    create_students
+  end
   test "should get index" do
-    get students_index_url
+    get students_path
     assert_response :success
   end
 
   test "should get show" do
-    get students_show_url
+    get student_path(@lucifer_lombardi)
     assert_response :success
   end
 
   test "should get new" do
-    get students_new_url
-    assert_response :success
-  end
-
-  test "should get create" do
-    get students_create_url
+    get new_student_path
     assert_response :success
   end
 
   test "should get edit" do
-    get students_edit_url
+    get edit_student_path(@lucifer_lombardi)
     assert_response :success
   end
 
-  test "should get update" do
-    get students_update_url
-    assert_response :success
-  end
-
-  test "should get destroy" do
-    get students_destroy_url
-    assert_response :success
-  end
 end

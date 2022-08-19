@@ -1,38 +1,28 @@
 require "test_helper"
 
 class TeacherControllerTest < ActionDispatch::IntegrationTest
+  setup do
+    create_subject_levels
+    create_teachers
+  end
   test "should get index" do
-    get teacher_index_url
+    get teachers_path 
     assert_response :success
   end
 
   test "should get show" do
-    get teacher_show_url
+    get teacher_path(@peach)
     assert_response :success
   end
 
   test "should get new" do
-    get teacher_new_url
-    assert_response :success
-  end
-
-  test "should get create" do
-    get teacher_create_url
+    get new_teacher_path
     assert_response :success
   end
 
   test "should get edit" do
-    get teacher_edit_url
+    get edit_teacher_path(@peach)
     assert_response :success
   end
-
-  test "should get update" do
-    get teacher_update_url
-    assert_response :success
-  end
-
-  test "should get destroy" do
-    get teacher_destroy_url
-    assert_response :success
-  end
+ 
 end

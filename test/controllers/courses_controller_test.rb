@@ -1,38 +1,31 @@
 require "test_helper"
 
 class CoursesControllerTest < ActionDispatch::IntegrationTest
+  setup do 
+    create_subject_levels
+    create_students
+    create_teachers
+    create_schedules
+    create_courses
+  end
   test "should get show" do
-    get courses_show_url
+    get course_path(@olympiad_math_course)
     assert_response :success
   end
 
   test "should get index" do
-    get courses_index_url
+    get courses_path
     assert_response :success
   end
 
   test "should get new" do
-    get courses_new_url
-    assert_response :success
-  end
-
-  test "should get create" do
-    get courses_create_url
+    get new_course_path
     assert_response :success
   end
 
   test "should get edit" do
-    get courses_edit_url
-    assert_response :success
+    get edit_course_path(@olympiad_math_course)
+    assert_response :found
   end
 
-  test "should get update" do
-    get courses_update_url
-    assert_response :success
-  end
-
-  test "should get destroy" do
-    get courses_destroy_url
-    assert_response :success
-  end
 end

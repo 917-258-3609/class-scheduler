@@ -67,6 +67,9 @@ gem "chronic_duration"
 # Use Ice Cube to handle recurrence
 gem "ice_cube"
 
+# Use Rails Sortable to handle subject level sorting
+gem "rails_sortable"
+
 # Material CSS
 gem "materialize-sass"
 gem "material_icons"
