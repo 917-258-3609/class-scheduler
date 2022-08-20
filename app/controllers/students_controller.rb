@@ -59,6 +59,12 @@ class StudentsController < ApplicationController
     redirect_to students_path, notice: "Student was successfully destroyed."
   end
 
+  def search
+    @students = if params[:search].nil? then Student.all
+      else Student.where("first_name = ? OR last_name = ?", params[:search], params[:search])
+    end
+  end
+
   private
   def set_student
     @student = Student.find(params[:id])

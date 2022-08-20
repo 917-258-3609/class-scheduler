@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   resources :schedules, only: %i[index show edit update]
+  get "/search/students", to: "students#search", as: "student_search"
   resources :students
   resources :subject_levels, only: %i[new create destroy]
   resources :subjects, only: %i[ show ]

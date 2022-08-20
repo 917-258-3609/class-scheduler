@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "student_search" do%>
+    <% @students.each do |s| %>
+    <tr>  
+        <td><%= "#{s.first_name} #{s.last_name}" %></td>
+        <td><%= s.user.email %></td>
+        <td><%= s.user.balance %></td>
+        <td><%= link_to "Details", s %></td>
+        <td><%= link_to "Edit", edit_student_path(s) %></td>
+        <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
+    </tr>
+    <% end %>
+<% end %>
