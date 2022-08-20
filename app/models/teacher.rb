@@ -10,7 +10,8 @@ class Teacher < ApplicationRecord
     validate :schedule_preference_is_weekly
 
     def teaches?(sl)
-
+        my_sl = self.subject_levels.for_subject(sl.subject)
+        return !my_sl.empty? && (my_sl.first.level <= sl.level)
     end
     private
     def schedule_preference_is_weekly

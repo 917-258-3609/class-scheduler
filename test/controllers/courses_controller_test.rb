@@ -2,6 +2,7 @@ require "test_helper"
 
 class CoursesControllerTest < ActionDispatch::IntegrationTest
   setup do 
+    create_subjects
     create_subject_levels
     create_students
     create_teachers

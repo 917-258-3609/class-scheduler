@@ -3,35 +3,38 @@ class Schedule < ApplicationRecord
   has_many :occurrences, dependent: :destroy
 
   validate :occurrences_do_not_overlap
+  validates_associated :scheduleable
 
   scope :for_course, ->{ where(scheduleable_type: "Course") }
+  scope :for_student, ->{ where(scheduleable_type: "Student") }
+  scope :for_teacher, ->{ where(scheduleable_type: "Teacher") }
 
   def inf_recur?
     !self.occurrences.inf_recur.empty?
   end
   def occurs_on?(time)
-    self.occurrences.all.any?{|x|x.occurs_on?(time)} 
+    self.occurrences.any?{|x|x.occurs_on?(time)} 
   end
   def occurring?
     self.occurs_on?(Time.now)
   end
   def occurred_count(time=Time.now)
-    self.occurrences.all.map{|o|o.occurred_count(time)}.sum
+    self.occurrences.map{|o|o.occurred_count(time)}.sum
   end
   def next_occurring_time(time=Time.now)
-    return nil if self.occurrences.all.empty?
+    return nil if self.occurrences.empty?
     next_occurrence = self.occurrences.all.map{|o|o.next_occurring_time(time)}.compact.min
     return next_occurrence
   end
   def overlapping?(s)
-    return self.occurrences.all.any?{|my_o|s.occurrences.all.any?{|s_o| my_o.overlapping?(s_o)}}
+    return self.occurrences.any?{|my_o|s.occurrences.any?{|s_o| my_o.overlapping?(s_o)}}
   end
 
   def occurrences_between(start_time, end_time)
-    return self.occurrences.all.map{|o|o.occurrences_between(start_time, end_time)}.flatten 
+    return self.occurrences.map{|o|o.occurrences_between(start_time, end_time)}.flatten 
   end
   def occurrence_at(time)
-    return self.occurrences.all.filter{|o|o.occurs_on?(time)}.first
+    return self.occurrences.filter{|o|o.occurs_on?(time)}.first
   end
   def last_extended_recurrence(time) 
     recurrences = self.occurrences.all

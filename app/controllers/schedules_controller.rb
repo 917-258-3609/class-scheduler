@@ -26,39 +26,8 @@ class SchedulesController < ApplicationController
     puts(@next_occurring_time)
   end
 
-  # GET /schedules/new
-  def new
-    @schedule = Schedule.new
-  end
-
   # GET /schedules/1/edit
   def edit
-  end
-
-  # POST /schedules or /schedules.json
-  def create
-    o_params = occurrence_params
-    start_time = Time.parse(o_params["start_time"]).utc
-    @schedule = Schedule.new()
-    @occurrence = Occurrence.new(
-      start_time: start_time, 
-      duration: ActiveSupport::Duration.build(ChronicDuration.parse(o_params["duration"])),
-      days: [start_time.wday],
-      count: o_params["count"].to_i,
-      period: ActiveSupport::Duration.build(o_params["period"].to_i)
-    )
-    respond_to do |format|
-      if @schedule.valid? && @occurrence.valid?
-        @schedule.occurrences << @occurrence
-        @schedule.save(validate: false)
-        @occurrence.save(validate: false)
-        format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully created." }
-        format.json { render :show, status: :created, location: @schedule }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @schedule.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # PATCH/PUT /schedules/1 or /schedules/1.json
@@ -76,16 +45,6 @@ class SchedulesController < ApplicationController
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
-    end
-  end
-
-  # DELETE /schedules/1 or /schedules/1.json
-  def destroy
-    @schedule.destroy
-
-    respond_to do |format|
-      format.html { redirect_to schedules_url, notice: "Schedule was successfully destroyed." }
-      format.json { head :no_content }
     end
   end
 

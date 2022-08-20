@@ -3,6 +3,7 @@ require "test_helper"
 class UserTest < ActiveSupport::TestCase
   context "users" do
     setup do
+      create_subjects
       create_subject_levels
       create_students
       create_teachers
