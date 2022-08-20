@@ -1,4 +1,11 @@
-<%= turbo_frame_tag "student_search" do%>
+<h1>Students</h1>
+<%= form_tag student_search_path, method: :get do %>
+  <%= text_field_tag(:search, params[:search],
+    placeholder: "Enter student name ...", 
+  )%>
+<% end %>
+<table>
+<tbody> 
     <% @students.each do |s| %>
     <tr>  
         <td><%= "#{s.first_name} #{s.last_name}" %></td>
@@ -9,4 +16,6 @@
         <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
     </tr>
     <% end %>
-<% end %>
+</tbody>
+</table>
+<%= link_to "New student", new_student_path %>

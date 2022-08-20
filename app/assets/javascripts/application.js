@@ -3,8 +3,6 @@
 //= require materialize
 //= require jquery-ui/widgets/sortable
 //= require rails_sortable
-//= require turbo
-$(document).on('turbo:load', function (){ alert("turbolinks on load event works") });
 $(document).ready(function(){
     $('.sortable').railsSortable();
     $('.datepicker').datepicker();

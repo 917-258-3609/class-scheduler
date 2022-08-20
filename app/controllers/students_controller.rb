@@ -60,8 +60,8 @@ class StudentsController < ApplicationController
   end
 
   def search
-    @students = if params[:search].nil? then Student.all
-      else Student.where("first_name = ? OR last_name = ?", params[:search], params[:search])
+    @students = if params[:search].empty? then Student.all
+      else Student.search_by_full_name(params[:search])
     end
   end
 
