@@ -1,23 +1,17 @@
-<h1>Students</h1>
-<%= form_tag student_search_path, method: :get do %>
-  <%= text_field_tag(:search, params[:search],
-    placeholder: "Enter student name ...", 
-  )%>
+<%= turbo_frame_tag "student_search" do%>
+    <table>
+    <tbody>
+        <% @students.each do |s| %>
+        <tr>  
+            <td><%= "#{s.first_name} #{s.last_name}" %></td>
+            <td><%= s.user.email %></td>
+            <td><%= s.user.balance %></td>
+            <td><%= link_to "Details", s %></td>
+            <td><%= link_to "Edit", edit_student_path(s) %></td>
+            <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
+        </tr>
+        <% end %>
+    </tbody>
+    </table>
 <% end %>
-<table>
-<tbody>
-    <turbo-frame id="student_search">
-    <% @students.each do |s| %>
-    <tr>  
-        <td><%= "#{s.first_name} #{s.last_name}" %></td>
-        <td><%= s.user.email %></td>
-        <td><%= s.user.balance %></td>
-        <td><%= link_to "Details", s %></td>
-        <td><%= link_to "Edit", edit_student_path(s) %></td>
-        <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
-    </tr>
-    <% end %>
-    </turbo-frame>
-</tbody>
-</table>
 <%= link_to "New student", new_student_path %>

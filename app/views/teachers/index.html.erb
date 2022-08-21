@@ -1,21 +1,24 @@
 <h1>Teachers</h1>
-<%= form_tag teacher_search_path, method: :get do %>
+<%= form_tag teacher_search_path, method: :get, "data-turbo-frame": "teacher_search" do %>
   <%= text_field_tag(:search, params[:search],
     placeholder: "Enter teacher name ...", 
+    "data-turbo-frame": "_self"
   )%>
 <% end %>
-<table>
-<tbody>  
-    <% @teachers.each do |s| %>
-    <tr>  
-        <td><%= s.name %></td>
-        <td><%= s.user.email %></td>
-        <td><%= s.user.balance %></td>
-        <td><%= link_to "Details", s %></td>
-        <td><%= link_to "Edit", edit_teacher_path(s) %></td>
-        <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
-    </tr>
-    <% end %>
-</tbody>
-</table>
+<%= turbo_frame_tag "teacher_search" do%>
+  <table>
+  <tbody>  
+      <% @teachers.each do |s| %>
+      <tr>  
+          <td><%= s.name %></td>
+          <td><%= s.user.email %></td>
+          <td><%= s.user.balance %></td>
+          <td><%= link_to "Details", s, target: "_top" %></td>
+          <td><%= link_to "Edit", edit_teacher_path(s), target: "_top" %></td>
+          <td><%= link_to "Delete", s, data: { turbo_method: :delete }, target: "_top"%></td>
+      </tr>
+      <% end %>
+  </tbody>
+  </table>
+<% end %>
 <%= link_to "New teacher", new_teacher_path %>
