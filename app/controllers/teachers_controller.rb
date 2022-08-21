@@ -25,7 +25,6 @@ class TeachersController < ApplicationController
         @schedule.save!
         @user.save!
         @teacher.save!
-        puts(level_params)
         level_params.each do |s, l|
           (@teacher.subject_levels << SubjectLevel.find(l)) if !l.empty?
         end

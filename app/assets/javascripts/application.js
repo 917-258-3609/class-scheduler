@@ -2,9 +2,9 @@
 //= require jquery-ui/widgets/sortable
 //= require rails_sortable
 import "jquery"
-import "@materializecss/materialize"
 import "@hotwired/turbo-rails"
-$(function(){
+import "@materializecss/materialize"
+$( document ).on('turbo:load', function() {   
     $('.sortable').railsSortable();
     $('.datepicker').datepicker();
     $('.timepicker').timepicker();

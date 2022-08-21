@@ -13,8 +13,6 @@ class StudentsController < ApplicationController
   end
 
   def create
-    puts(student_params)
-    puts(user_params)
     @user = User.new(user_params)
     @user.balance = 0.0
     @schedule = Schedule.new

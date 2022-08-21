@@ -23,7 +23,6 @@ class SchedulesController < ApplicationController
   # GET /schedules/1 or /schedules/1.json
   def show
     @next_occurring_time = @schedule.next_occurring_time
-    puts(@next_occurring_time)
   end
 
   # GET /schedules/1/edit
@@ -36,8 +35,6 @@ class SchedulesController < ApplicationController
       p = moving_params
       ftime = Time.parse(p[:ftime]).utc
       ttime = Time.parse(p[:ttime]).utc
-      puts(ftime)
-      puts(ttime)
       if @schedule.move_one(ftime, ttime)
         format.html { redirect_to schedule_url(@schedule), notice: "Schedule was successfully updated." }
         format.json { render :show, status: :ok, location: @schedule }

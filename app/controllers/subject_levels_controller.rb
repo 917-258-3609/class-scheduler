@@ -3,7 +3,6 @@ class SubjectLevelsController < ApplicationController
   # GET /levels/math
   def index
     @subject_levels = SubjectLevel.levels_by_subject
-    puts(@subject_levels)
   end
 
   def new 
