@@ -1,4 +1,6 @@
 class Teacher < ApplicationRecord
+    include PgSearch::Model
+    
     has_and_belongs_to_many :subject_levels
     has_many :courses, dependent: :destroy
     has_one :schedule, as: :scheduleable, dependent: :destroy
@@ -8,7 +10,10 @@ class Teacher < ApplicationRecord
     validates_presence_of :schedule
     validate :schedule_preference_recur_indefinitely
     validate :schedule_preference_is_weekly
-
+    
+    pg_search_scope :search_by_name, 
+        against: [:name],
+        using: :trigram 
     def teaches?(sl)
         my_sl = self.subject_levels.for_subject(sl.subject)
         return !my_sl.empty? && (my_sl.first.level <= sl.level)

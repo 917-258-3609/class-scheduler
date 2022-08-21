@@ -68,6 +68,12 @@ class TeachersController < ApplicationController
     redirect_to teachers_path, notice: "Teacher was successfully destroyed."
   end
 
+  def search
+    @teachers = if params[:search].empty? then Teacher.all
+      else Teacher.search_by_name(params[:search])
+    end
+  end
+
   private
   def set_teacher
     @teacher = Teacher.find(params[:id])
