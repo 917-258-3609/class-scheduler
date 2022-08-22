@@ -5,6 +5,7 @@
     "data-turbo-frame": "_self"
   )%>
 <% end %>
+<div class="content-body">
 <%= turbo_frame_tag "teacher_search" do%>
   <table>
   <tbody>  
@@ -15,10 +16,11 @@
           <td><%= s.user.balance %></td>
           <td><%= link_to "Details", s, target: "_top" %></td>
           <td><%= link_to "Edit", edit_teacher_path(s), target: "_top" %></td>
-          <td><%= link_to "Delete", s, data: { turbo_method: :delete }, target: "_top"%></td>
+          <td><%= button_to "Delete", s, method: :delete %></td>
       </tr>
       <% end %>
   </tbody>
   </table>
 <% end %>
+</div>
 <%= link_to "New teacher", new_teacher_path %>

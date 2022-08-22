@@ -13,12 +13,9 @@
 
   <body>
   <ul id="subject-dropdown" class="dropdown-content">
-    <% if @subjects.empty?%>
-      <li><%= link_to "Create Subject", new_subject_level_path %> </li>
-    <% else %>
-      <% @subjects.each do |s| %>
-        <li><%= link_to s.name, subject_path(s) %> </li>
-      <% end %>
+    <li><%= link_to "New Subject", new_subject_level_path %> </li>
+    <% @subjects.each do |s| %>
+      <li><%= link_to s.name, subject_path(s) %> </li>
     <% end %>
   </ul>
     <nav>
@@ -41,6 +38,11 @@
     </nav>
   
     <div class="container">
+      <% flash.each do |type, msg| %>
+        <div>
+          <%= msg %>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </body>

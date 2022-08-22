@@ -8,7 +8,7 @@
           <td><%= s.user.balance %></td>
           <td><%= link_to "Details", s %></td>
           <td><%= link_to "Edit", edit_teacher_path(s) %></td>
-          <td><%= link_to "Delete", s, data: { turbo_method: :delete }%></td>
+          <td><%= button_to "Delete", s, method: :delete %></td>
       </tr>
       <% end %>
   </tbody>

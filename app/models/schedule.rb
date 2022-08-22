@@ -27,7 +27,7 @@ class Schedule < ApplicationRecord
     return next_occurrence
   end
   def overlapping?(s)
-    return self.occurrences.any?{|my_o|s.occurrences.any?{|s_o| my_o.overlapping?(s_o)}}
+    return s && self.occurrences.any?{|my_o|s.occurrences.any?{|s_o| my_o.overlapping?(s_o)}}
   end
 
   def occurrences_between(start_time, end_time)

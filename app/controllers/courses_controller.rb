@@ -20,6 +20,7 @@ class CoursesController < ApplicationController
     @schedule = Schedule.new
     @schedule.occurrences << @recurrence
     @course = Course.new(course_params)
+    @course.is_active = true
     @course.schedule = @schedule
     begin 
       ActiveRecord::Base.transaction do

@@ -20,7 +20,7 @@ class Course < ApplicationRecord
   end
   def teacher_schedule
     other_schedules = \
-      self.teacher.courses.where.not(id: self.id).extract_associated(:schedule)
+      self.teacher.courses.active.where.not(id: self.id).extract_associated(:schedule)
     errors.add(:course, "Courses taught by the same teacher cannot overlap") if \
       other_schedules.any?{|s| s.overlapping?(self.schedule)}
   end
@@ -31,7 +31,7 @@ class Course < ApplicationRecord
       .joins("INNER JOIN courses 
                  ON schedules.scheduleable_id = courses.id 
                 AND schedules.scheduleable_type = 'Course'")
-      .where("courses.id != ?", self.id)
+      .where("courses.id != ? AND courses.is_active IS TRUE", self.id)
       .joins("INNER JOIN courses_students
                  ON courses_students.course_id = courses.id")
       .joins("INNER JOIN students

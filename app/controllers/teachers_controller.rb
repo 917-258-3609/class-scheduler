@@ -30,7 +30,7 @@ class TeachersController < ApplicationController
         end
       end
     rescue ActiveRecord::RecordInvalid
-      render :new, status: :unprocessable_entity
+      redirect_to new_teacher_path, status: :unprocessable_entity
       flash[:error] = @teacher.errors.full_messages.to_sentence + 
                       @user.errors.full_messages.to_sentence
     else

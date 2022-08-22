@@ -1,5 +1,6 @@
 <h1>Courses</h1>
 
+<div class="content-body">
 <table>
 <tbody>  
   <% @courses_info.each do |c|%>
@@ -8,8 +9,10 @@
       <td><%= c[:next_occurrence] %></td>
       <td><%= link_to "Details", c[:course] %></td>
       <td><%= link_to "Edit", edit_course_path(c[:course]) %></td>
+      <td><%= button_to "Delete", c, method: :delete %></td>
     </tr>
   <% end %>
 </tbody>  
 </table>
+</div>
 <%= link_to "New course", new_course_path %>

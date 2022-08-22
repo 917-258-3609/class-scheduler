@@ -7,7 +7,7 @@
     <% @levels.each_with_sortable_id do |l, l_id| %>
     <tr id="<%= l_id %>">  
       <td><%= l.level_name %></td>
-      <td><%= link_to "Delete", subject_level_path(l), method: :delete %></td>
+      <td><%= button_to "Delete", l, method: :delete %></td>
     </tr>
     <% end %>
   </tbody>
