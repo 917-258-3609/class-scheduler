@@ -20,7 +20,8 @@ class Occurrence < ApplicationRecord
   before_validation do
     self.start_time = self.start_time.utc
   end
-  before_save do 
+  before_save do
+    self.build_ice_cube 
     self.ice_cube_b = self.ice_cube.to_hash
   end
 
@@ -79,6 +80,12 @@ class Occurrence < ApplicationRecord
   def ice_cube
     return @ice_cube if @ice_cube
     return (@ice_cube = IceCube::Schedule.from_hash(self.ice_cube_b)) if self.ice_cube_b
+    return build_ice_cube 
+  end
+  def clear_ice_cube
+    @ice_cube = nil
+  end
+  def build_ice_cube
     @ice_cube = IceCube::Schedule.new(self.start_time, duration: self.duration)
     case self.period
     when 1.day

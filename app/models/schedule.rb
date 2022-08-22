@@ -27,7 +27,21 @@ class Schedule < ApplicationRecord
     return next_occurrence
   end
   def overlapping?(s)
-    return s && self.occurrences.any?{|my_o|s.occurrences.any?{|s_o| my_o.overlapping?(s_o)}}
+    return false if s.nil?
+    
+    t_time = self.travel_time?(s)
+    is_over = false
+    unless t_time == 0 
+      self.occurrences.all.each do |o|
+        o.begin_time -= t_time
+        o.duration += t_time
+        o.build_ice_cube
+        is_over = self.occurrences_overlap?(s)
+        o.clear_ice_cube
+      end
+    else
+      
+    end
   end
 
   def occurrences_between(start_time, end_time)
@@ -70,11 +84,20 @@ class Schedule < ApplicationRecord
   def teacher
     scheduleable if scheduleable.is_a? Teacher
   end
+  def is_for_teacher?
+    self.scheduleable_type == "Teacher"
+  end
   def student 
     scheduleable if scheduleable.is_a? Student
   end
+  def is_for_student?
+    self.scheduleable_type == "Student"
+  end
   def course 
     scheduleable if scheduleable.is_a? Course
+  end
+  def is_for_course?
+    self.scheduleable_type == "Course"
   end
   private
   def occurrences_do_not_overlap
@@ -86,5 +109,15 @@ class Schedule < ApplicationRecord
       end
     end
     return true
+  end
+  def occurrences_overlap?(s)
+    return self.occurrences.any? do |my_o|
+      s.occurrences.any? {|s_o| my_o.overlapping?(s_o)}
+    end
+  end
+  def travel_time?(s)
+    return 0 unless self.is_for_course? && s.is_for_course?
+    return 15.minutes if self.course.location == "Zoom" && s.course.location == "Zoom"
+    return 1.hour
   end
 end
