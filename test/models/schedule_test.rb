@@ -60,6 +60,19 @@ class ScheduleTest < ActiveSupport::TestCase
       assert(!@lucifer_pref_schedule.occurs_on?(ftime))
       assert(@lucifer_pref_schedule.occurs_on?(ttime))
     end
+    should "have overlapping? method that accounts for travel time" do
+      assert(!@regular_english_1_schedule.overlapping?(@regular_english_2_schedule))
+      # Accounting travel time from courses
+      create_subjects
+      create_subject_levels
+      create_teachers
+      create_courses
+      assert(@regular_english_1_schedule.overlapping?(@regular_english_2_schedule))
+      destroy_courses
+      destroy_teachers
+      destroy_subject_levels
+      destroy_subjects
+    end
   end
   private
   def assert_overlapping(o1, o2)

@@ -11,7 +11,7 @@ module ConstructionHelper
         schedule: @olympiad_math_schedule, start_time_s: "2022-08-01 14:00:00", count: 3
       )
       @every_monday_1500_3 = FactoryBot.create(:occurrence, 
-        schedule: @regular_math_schedule, start_time_s: "2022-08-01 15:00:00", count: 3
+        schedule: @regular_math_schedule, start_time_s: "2022-08-01 15:15:00", count: 3
       )
       @every_tuesday_1400_20 = FactoryBot.create(:occurrence, 
         schedule: @regular_english_1_schedule, start_time_s: "2022-08-02 14:00:00", count: 20

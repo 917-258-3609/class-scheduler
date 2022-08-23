@@ -27,20 +27,10 @@ class Schedule < ApplicationRecord
     return next_occurrence
   end
   def overlapping?(s)
-    return false if s.nil?
-    
-    t_time = self.travel_time?(s)
-    is_over = false
-    unless t_time == 0 
-      self.occurrences.all.each do |o|
-        o.begin_time -= t_time
-        o.duration += t_time
-        o.build_ice_cube
-        is_over = self.occurrences_overlap?(s)
-        o.clear_ice_cube
-      end
-    else
-      
+    return false if s.nil? || s.occurrences.empty?
+    t_time = self.travel_time(s)
+    return self.occurrences.any? do |my_o|
+      s.occurrences.any? {|s_o| my_o.overlapping?(s_o, travel_time: t_time)}
     end
   end
 
@@ -110,12 +100,7 @@ class Schedule < ApplicationRecord
     end
     return true
   end
-  def occurrences_overlap?(s)
-    return self.occurrences.any? do |my_o|
-      s.occurrences.any? {|s_o| my_o.overlapping?(s_o)}
-    end
-  end
-  def travel_time?(s)
+  def travel_time(s)
     return 0 unless self.is_for_course? && s.is_for_course?
     return 15.minutes if self.course.location == "Zoom" && s.course.location == "Zoom"
     return 1.hour

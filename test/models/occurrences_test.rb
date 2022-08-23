@@ -96,6 +96,9 @@ class OccurrenceTest < ActiveSupport::TestCase
       @test_occurrence = FactoryBot.build(:occurrence, duration: 3.hour, period: 3.hour)
       assert(@test_occurrence.valid?)
     end
+    should "have overlapping with travel time" do
+      assert(!@every_monday_1400_3.overlapping?(@every_monday_1500_3, travel_time: 15.minutes))
+    end
   end
   
   private

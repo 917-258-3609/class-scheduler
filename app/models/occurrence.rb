@@ -21,7 +21,6 @@ class Occurrence < ApplicationRecord
     self.start_time = self.start_time.utc
   end
   before_save do
-    self.build_ice_cube 
     self.ice_cube_b = self.ice_cube.to_hash
   end
 
@@ -43,18 +42,26 @@ class Occurrence < ApplicationRecord
     return nil if !self.extend_one
     ret = self.last_occurring_time
     self.count --
-    @ice_cube = nil
+    self.clear_ice_cube
     return ret
   end
-  def overlapping?(o)
+  # Temporarily adjust ice cube start time and duration for travel time
+  def account_for_travel_time(t)
+    self.ice_cube.start_time = self.ice_cube.start_time - t
+    self.ice_cube.duration = self.ice_cube.duration + t
+  end
+  def overlapping?(o, travel_time: 0)
     # TODO: throw error here instead
     # assert(self.one_time? || self.period == 1.week)
     # assert(o.one_time? || o.period == 1.week)
     # assert(self.duration < 1.day && o.duration < 1.day)
-    self.ice_cube.conflicts_with?(o.ice_cube, [ 
+    self.account_for_travel_time(travel_time) if travel_time != 0
+    ret = self.ice_cube.conflicts_with?(o.ice_cube, [ 
       self.end_time || o.end_time || Time.now + 1.year, 
       o.end_time || self.end_time || Time.now + 1.year
     ].min )
+    self.clear_ice_cube if travel_time != 0
+    return ret
   end
   def occurrences_between(start_time, end_time)
     self.ice_cube.occurrences_between(start_time, end_time)
@@ -84,22 +91,7 @@ class Occurrence < ApplicationRecord
   end
   def clear_ice_cube
     @ice_cube = nil
-  end
-  def build_ice_cube
-    @ice_cube = IceCube::Schedule.new(self.start_time, duration: self.duration)
-    case self.period
-    when 1.day
-      @ice_cube.add_recurrence_rule(IceCube::Rule.daily.count(self.count))
-    when 1.week
-      @ice_cube.add_recurrence_rule(IceCube::Rule
-        .weekly
-        .day(self.days)
-        .count(self.count)
-      )
-    else
-      @ice_cube = nil
-    end
-    return @ice_cube
+    self.ice_cube
   end
   private
   # Validations
@@ -132,5 +124,21 @@ class Occurrence < ApplicationRecord
     return false if !(cnt = recurrence.occurrence_count)
     self.count++
     recurrence.count(cnt+1)
+  end
+  def build_ice_cube
+    @ice_cube = IceCube::Schedule.new(self.start_time, duration: self.duration)
+    case self.period
+    when 1.day
+      @ice_cube.add_recurrence_rule(IceCube::Rule.daily.count(self.count))
+    when 1.week
+      @ice_cube.add_recurrence_rule(IceCube::Rule
+        .weekly
+        .day(self.days)
+        .count(self.count)
+      )
+    else
+      @ice_cube = nil
+    end
+    return @ice_cube
   end
 end
