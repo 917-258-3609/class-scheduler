@@ -1,5 +1,9 @@
 <h1>Course</h1>
-
+<h4>Subject</h4>
+<%= @course.subject_level.to_s %>
+<h4>Teacher</h4>
+<%= @course.teacher.name %>
+<h4>Dates</h4>
 <ul class="collection">
   <% @occurrences.each do |o| %>
     <li class="collection-item"><%= o.start_time%></li>
