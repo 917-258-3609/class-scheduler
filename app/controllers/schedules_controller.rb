@@ -13,9 +13,9 @@ class SchedulesController < ApplicationController
     etime = start_date.end_of_month.end_of_week.end_of_day
 
     @calendar_occurrences = \
-      Schedule.all.map{|s| 
-        s.occurrences_between(btime, etime).map{|o|
-          CalendarOccurrence.new(o, s)
+      Course.active.includes(:schedule, :subject_level).map{|c| 
+        c.schedule.occurrences_between(btime, etime).map{|o|
+          CalendarOccurrence.new(o, c)
         }
       }.flatten
   end
