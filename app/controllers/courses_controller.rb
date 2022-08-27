@@ -12,6 +12,9 @@ class CoursesController < ApplicationController
   end
 
   def new
+    redirect_to new_subject_level_path, notice: "Create a subject first!" if SubjectLevel.all.empty?
+    redirect_to new_teacher_path, notice: "Create a teacher first!" if Teacher.all.empty?
+    redirect_to new_student_path, notice: "Create a student first!" if Student.all.empty?
     @course = Course.new
   end
 
