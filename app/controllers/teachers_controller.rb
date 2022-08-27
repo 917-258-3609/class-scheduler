@@ -1,13 +1,25 @@
 class TeachersController < ApplicationController
+  include OccurrencesHelper
   before_action :set_teacher, only: %i[ show destroy edit update ]
   def index
     @teachers = Teacher.all
   end
 
   def show
+    start_date = params.fetch(:start_date, Date.today).to_date
+    btime = start_date.beginning_of_week.beginning_of_day
+    etime = start_date.end_of_week.end_of_day
+    
+    @calendar_occurrences = \
+      @teacher.courses.includes(:schedule).active.map{|c| 
+        c.schedule.occurrences_between(btime, etime).map{|o|
+          CalendarOccurrence.new(o, c)
+        }
+      }.flatten
   end
 
   def new
+    redirect_to new_subject_level_path, notice: "Create a subject first!" if SubjectLevel.all.empty?
     @teacher = Teacher.new
     @teacher.user = User.new
     @subject_levels = SubjectLevel.levels_by_subject

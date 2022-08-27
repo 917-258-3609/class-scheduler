@@ -1,10 +1,21 @@
 class StudentsController < ApplicationController
+  include OccurrencesHelper
   before_action :set_student, only: %i[ show destroy edit update ]
   def index
     @students = Student.all
   end
 
   def show
+    start_date = params.fetch(:start_date, Date.today).to_date
+    btime = start_date.beginning_of_week.beginning_of_day
+    etime = start_date.end_of_week.end_of_day
+    
+    @calendar_occurrences = \
+      @student.courses.includes(:schedule).active.map{|c| 
+        c.schedule.occurrences_between(btime, etime).map{|o|
+          CalendarOccurrence.new(o, c)
+        }
+      }.flatten
   end
 
   def new

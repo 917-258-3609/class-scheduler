@@ -9,7 +9,7 @@
       <td><%= c[:next_occurrence] %></td>
       <td><%= link_to "Details", c[:course] %></td>
       <td><%= link_to "Edit", edit_course_path(c[:course]) %></td>
-      <td><%= button_to "Delete", c, method: :delete %></td>
+      <td><%= button_to "Delete", c[:course], method: :delete %></td>
     </tr>
   <% end %>
 </tbody>  
