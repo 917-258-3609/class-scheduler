@@ -61,12 +61,13 @@ class CoursesController < ApplicationController
     params[:course][:occurrence][:period] = ActiveSupport::Duration.build(
       params[:course][:occurrence][:period].to_i
     )
+    params[:course][:fee] = (params[:course][:fee].to_f * 100).to_i 
   end
   def set_course
     @course = Course.find(params[:id])
   end
   def course_params
-    params.require(:course).permit(:subject_level_id, :teacher_id, student_ids: [])
+    params.require(:course).permit(:subject_level_id, :teacher_id, :fee, student_ids: [])
   end
   def occurrence_params
     params.require(:course).permit(occurrence: [:period, :start_time, :duration, :count, days: []])[:occurrence]

@@ -1,7 +1,7 @@
 class CreateCourses < ActiveRecord::Migration[7.0]
   def change
     create_table :courses do |t|
-      t.decimal :fee, precision: 10, scale: 2
+      t.integer :fee
       t.string :location
       t.string :comment
       t.boolean :is_active 

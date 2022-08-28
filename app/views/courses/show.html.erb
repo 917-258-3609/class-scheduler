@@ -3,6 +3,8 @@
 <%= @course.subject_level.to_s %>
 <h4>Teacher</h4>
 <%= @course.teacher.name %>
+<h4>Fee</h4>
+<%= @course.fee/100.0 %>
 <h4>Dates</h4>
 <ul class="collection">
   <% @occurrences.each do |o| %>

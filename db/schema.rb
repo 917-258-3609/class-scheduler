@@ -16,7 +16,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_20_233803) do
   enable_extension "plpgsql"
 
   create_table "courses", force: :cascade do |t|
-    t.decimal "fee", precision: 10, scale: 2
+    t.integer "fee"
     t.string "location"
     t.string "comment"
     t.boolean "is_active"
@@ -95,7 +95,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_20_233803) do
 
   create_table "users", force: :cascade do |t|
     t.string "email"
-    t.decimal "balance", precision: 10, scale: 2
+    t.integer "balance"
     t.string "accountable_type"
     t.bigint "accountable_id"
     t.boolean "is_active"

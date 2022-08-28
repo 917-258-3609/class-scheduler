@@ -3,7 +3,7 @@ class Course < ApplicationRecord
   belongs_to :teacher
   has_one :schedule, as: :scheduleable
   belongs_to :subject_level
-  has_toggled_attr(:active)
+  has_toggled_attr :active
 
   # Validations
   validates_presence_of :teacher

@@ -15,5 +15,6 @@
     <%= s.time_field :duration, value: "00:00" %><br/>
     <%= s.input :count, as: :integer %>
   <% end %>
+  <%= f.input :fee, as: :money %>
   <%= f.button :submit %>
 <% end %>
