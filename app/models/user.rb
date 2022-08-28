@@ -12,6 +12,10 @@ class User < ApplicationRecord
     def student 
         accountable if accountable.is_a? Student
     end
+    def pay(amount)
+        self.balance += (amount*100)
+        self.save
+    end
     private
     def sanitize
         self.email.downcase!

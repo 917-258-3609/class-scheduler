@@ -11,5 +11,7 @@ Rails.application.routes.draw do
   resources :courses
   get "/search/students", to: "students#search", as: "student_search"
   get "/search/teachers", to: "teachers#search", as: "teacher_search"
+  get "/pay/:id", to: "users#payment", as: "user_pay"
+  post "/pay/:id", to: "users#pay"
   root "schedules#index"
 end

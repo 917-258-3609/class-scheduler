@@ -1,0 +1,5 @@
+<%= form_tag user_pay_path(user), method: :post do %>
+  <%= number_field_tag(:amount, params[:amount], min: 0, step: 0.01,
+    placeholder: "Enter payment ...",
+  )%>
+<% end %>
