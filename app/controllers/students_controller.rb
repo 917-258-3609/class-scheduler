@@ -69,7 +69,7 @@ class StudentsController < ApplicationController
   end
 
   def search
-    @students = if params[:search].empty? then Student.all
+    @students = if params[:search].blank? then Student.all
       else Student.search_by_full_name(params[:search])
     end
   end

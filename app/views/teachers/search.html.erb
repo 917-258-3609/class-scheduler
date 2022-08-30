@@ -7,8 +7,9 @@
           <td><%= s.user.email %></td>
           <td><%= s.user.balance %></td>
           <td><%= link_to "Details", s %></td>
-          <td><%= link_to "Edit", edit_teacher_path(s) %></td>
-          <td><%= button_to "Delete", s, method: :delete %></td>
+          <td><%= link_to "Edit", edit_teacher_path(s), target: "_top" %></td>
+          <td><%= link_to "Pay", user_pay_path(s.user), target: "_top" %></td>
+          <td><%= button_to "Delete", s, method: :delete%></td>
       </tr>
       <% end %>
   </tbody>

@@ -16,6 +16,10 @@ class User < ApplicationRecord
         self.balance += (amount*100)
         self.save
     end
+    # TODO rename this
+    def total_balance(time=Time.now)
+        (self.balance - self.accountable.total_charge_on(time))/100.0
+    end
     private
     def sanitize
         self.email.downcase!

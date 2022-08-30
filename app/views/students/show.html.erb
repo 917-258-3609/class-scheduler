@@ -1,6 +1,6 @@
 <h3><%= "#{@student.first_name} #{@student.last_name}" %></h3>
 <%= link_to "All student", students_path %>
-
+<h3><%= @student.user.total_balance %></h3>
 <%= week_calendar(events: @calendar_occurrences) do |date, occurs| %>
   <h6><%= date.day %></h6>
   <% occurs.each do |o| %>

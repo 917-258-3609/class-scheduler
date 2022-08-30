@@ -6,22 +6,8 @@
   )%>
 <% end %>
 <div class="content-body">
-<%= turbo_frame_tag "teacher_search" do%>
-  <table>
-  <tbody>  
-      <% @teachers.each do |s| %>
-      <tr>  
-          <td><%= s.name %></td>
-          <td><%= s.user.email %></td>
-          <td><%= s.user.balance %></td>
-          <td><%= link_to "Details", s, target: "_top" %></td>
-          <td><%= link_to "Edit", edit_teacher_path(s), target: "_top" %></td>
-          <td><%= link_to "Pay", user_pay_path(s.user), target: "_top" %></td>
-          <td><%= button_to "Delete", s, method: :delete %></td>
-      </tr>
-      <% end %>
-  </tbody>
-  </table>
+<%= turbo_frame_tag "teacher_search", src: teacher_search_path do%>
+
 <% end %>
 </div>
 <%= link_to "New teacher", new_teacher_path %>

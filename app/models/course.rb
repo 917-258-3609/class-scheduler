@@ -9,10 +9,15 @@ class Course < ApplicationRecord
   validates_presence_of :teacher
   validates_presence_of :schedule
   validates_presence_of :subject_level
+  validates_presence_of :fee
 
   validate :teacher_teaches_subject
   validate :teacher_schedule
   validate :student_schedule
+  
+  def total_fee_on(time=Time.now)
+    return self.schedule.occurred_count(time) * self.fee
+  end
   private
   def teacher_teaches_subject
     errors.add(:course, "Teacher must teaches the course subject level") if \

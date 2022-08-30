@@ -48,5 +48,10 @@ class CourseTest < ActiveSupport::TestCase
       assert(!@regular_english_course_2.valid?)
       assert(!@olympiad_math_course.valid?)
     end
+    should "have total_fee_on which calculates the total fee from a given time" do
+      t_time = Time.parse "2022-08-01 15:00:00"
+      assert_equal(3, @olympiad_math_course.schedule.occurred_count(t_time))
+      assert_equal(30000, @olympiad_math_course.total_fee_on(t_time))
+    end
   end
 end
