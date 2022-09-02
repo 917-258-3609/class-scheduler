@@ -12,7 +12,10 @@
                 input_html: {multiple: true} 
     %>
     <%= s.label :duration, "Class length"%>
-    <%= s.time_field :duration, value: "00:00" %><br/>
+    <div class="row">
+      <div class="col s6"><%= s.input :hours, as: :integer, min: 0, max: 23 %></div>
+      <div class="col s6"><%= s.input :minutes, as: :integer, min: 0, max: 59%></div>
+    </div>
     <%= s.input :count, as: :integer %>
   <% end %>
   <%= f.input :fee, as: :money %>

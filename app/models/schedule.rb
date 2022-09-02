@@ -13,7 +13,7 @@ class Schedule < ApplicationRecord
     !self.occurrences.inf_recur.empty?
   end
   def occurs_on?(time)
-    self.occurrences.any?{|x|x.occurs_on?(time)} 
+    self.occurrences.all.any?{|x|x.occurs_on?(time)} 
   end
   def occurring?
     self.occurs_on?(Time.now)
@@ -40,15 +40,16 @@ class Schedule < ApplicationRecord
   def occurrence_at(time)
     return self.occurrences.filter{|o|o.occurs_on?(time)}.first
   end
-  def last_extended_recurrence(time) 
+  def last_extended_recurrence 
     recurrences = self.occurrences.all
     return nil if recurrences.any?{|o|o.inf_recur?}
     min_hash = recurrences
       .map{|r|{arg: r, val: r.extended_occurring_time}}
-      .reduce{|h1, h2| h1.val < h2.val ? h1 : h2}
+      .reduce{|h1, h2| h1[:val] > h2[:val] ? h1 : h2}
     return min_hash[:arg]
   end
-  def create_recurrence(time, count, days, period, duration)
+  # Actions
+  def new_recurrence(time, count, days, period, duration)
     return Occurrence.create(
       start_time: time,
       count: count,
@@ -67,8 +68,14 @@ class Schedule < ApplicationRecord
     return o.delete_occurrence(time) && self.extend_one
   end
   def extend_one
-    return true if !(o = self.last_extended_recurrence)
-    return o.extend_recurrence
+    if (o = self.last_extended_recurrence)
+      return o.extend_recurrence 
+    end
+  end
+  def extend_many(c)
+    if (o = self.last_extended_recurrence)
+      return o.extend_recurrence(c) 
+    end
   end
 
   def teacher

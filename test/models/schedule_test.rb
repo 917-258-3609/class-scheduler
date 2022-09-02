@@ -53,12 +53,36 @@ class ScheduleTest < ActiveSupport::TestCase
       assert(!@testing_occurrence.valid?)
     end
     should "have move one method that moves one occurrence" do
-      ftime = Time.parse("2022-08-08 14:00:00")
-      ttime = Time.parse("2022-08-11 14:00:00")
+      ftime = Time.parse("2022-08-08 14:00:00").utc
+      ttime = Time.parse("2022-08-11 14:00:00").utc
       assert(@lucifer_pref_schedule.occurrence_at(ftime))
       assert(@lucifer_pref_schedule.move_one(ftime, ttime))
       assert(!@lucifer_pref_schedule.occurs_on?(ftime))
       assert(@lucifer_pref_schedule.occurs_on?(ttime))
+    end
+    should "have extend one method that extend one occurrence" do
+      time = Time.parse("2022-08-15 14:00:00").utc
+      assert(@olympiad_math_schedule.occurs_on?(time))
+      assert(@olympiad_math_schedule.extend_one)
+      assert(@olympiad_math_schedule.occurs_on?(time+1.week))
+      assert(@olympiad_math_schedule.extend_one)
+      assert(@olympiad_math_schedule.occurs_on?(time+2.week))
+      time = Time.parse("2022-09-04 15:00:00").utc
+      assert(@nobel_science_schedule.occurs_on?(time))
+      assert(@nobel_science_schedule.extend_one)
+      assert(@nobel_science_schedule.occurs_on?(time+3.days))
+      assert(@nobel_science_schedule.extend_one)
+      assert(@nobel_science_schedule.occurs_on?(time+4.days))
+    end
+    should "have extend many method that extend many occurrences" do
+      time = Time.parse("2022-08-15 14:00:00").utc
+      assert(@olympiad_math_schedule.occurs_on?(time))
+      assert(@olympiad_math_schedule.extend_many(2))
+      assert(@olympiad_math_schedule.occurs_on?(time+2.week))
+      time = Time.parse("2022-09-04 15:00:00").utc
+      assert(@nobel_science_schedule.occurs_on?(time))
+      assert(@nobel_science_schedule.extend_many(4))
+      assert(@nobel_science_schedule.occurs_on?(time+1.week))
     end
     should "have overlapping? method that accounts for travel time" do
       assert(!@regular_english_1_schedule.overlapping?(@regular_english_2_schedule))

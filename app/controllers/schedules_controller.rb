@@ -2,7 +2,7 @@ require "chronic_duration"
 require "./app/helpers/occurrences_helper"
 class SchedulesController < ApplicationController
   include OccurrencesHelper
-  before_action :set_schedule, only: %i[ show edit update destroy ]
+  before_action :set_schedule, only: %i[ show edit update destroy move extend ]
 
   # GET /schedules or /schedules.json
   def index
@@ -43,6 +43,25 @@ class SchedulesController < ApplicationController
         format.json { render json: @schedule.errors, status: :unprocessable_entity }
       end
     end
+  end
+  def move
+      ftime = Time.parse(params[:schedule_move][:ftime]).utc
+      ttime = Time.parse(params[:schedule_move][:ttime]).utc
+      if @schedule.move_one(ftime, ttime)
+        redirect_to schedule_url(@schedule), notice: "Occurrence was successfully moved."
+      else  
+        render :new, status: :unprocessable_entity
+        flash[:error] = @schedule.errors.full_messages.to_sentence 
+      end
+  end
+  def extend
+      cnt = params[:schedule_extend][:count].to_i
+      if @schedule.extend_many(cnt)
+        redirect_to schedule_url(@schedule), notice: "Course was successfully extended by #{cnt} occurrences."
+      else  
+        render :new, status: :unprocessable_entity
+        flash[:error] = @schedule.errors.full_messages.to_sentence 
+      end
   end
 
   private

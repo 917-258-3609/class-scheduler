@@ -1,0 +1,4 @@
+<%= simple_form_for :schedule_extend, url: schedule_extend_path(schedule), method: :patch do |f| %>
+  <%= f.input :count, as: :integer%>
+  <%= f.button :submit %>
+<% end %>

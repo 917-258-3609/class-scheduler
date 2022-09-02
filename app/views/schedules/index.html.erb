@@ -1,7 +1,7 @@
 <p style="color: green"><%= notice %></p>
 
 <h1>Schedules</h1>
-<div id="calendar">
+<%= turbo_frame_tag 'calendar' do %>
   <%= month_calendar(events: @calendar_occurrences) do |date, occurs| %>
     <h6><%= date.day %></h6>
     <% for o in occurs %>
@@ -9,4 +9,4 @@
       <br/>
     <% end %>
   <% end %>
-</div>
+<% end %>

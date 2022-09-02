@@ -6,7 +6,7 @@
   <% @courses_info.each do |c|%>
     <tr>
       <td><%= c[:course].subject_level.to_s %></td>
-      <td><%= c[:next_occurrence] %></td>
+      <td><%= c[:next_occurrence].localtime.strftime(TIMEFM) %></td>
       <td><%= link_to "Details", c[:course] %></td>
       <td><%= link_to "Edit", edit_course_path(c[:course]) %></td>
       <td><%= button_to "Delete", c[:course], method: :delete %></td>

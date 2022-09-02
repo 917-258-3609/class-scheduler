@@ -41,7 +41,7 @@ class Occurrence < ApplicationRecord
   def extended_occurring_time
     return nil if !self.extend_one
     ret = self.last_occurring_time
-    self.count --
+    self.count-=1
     self.clear_ice_cube
     return ret
   end
@@ -80,8 +80,8 @@ class Occurrence < ApplicationRecord
     self.remove_time(time) &&
     self.save
   end
-  def extend_recurrence
-    self.extend_one &&
+  def extend_recurrence(c=1)
+    self.extend_many(c) &&
     self.save
   end
   def ice_cube
@@ -119,11 +119,13 @@ class Occurrence < ApplicationRecord
     self.ice_cube.add_exception_time(time) if \
       !self.ice_cube.remove_recurrence_time(time)
   end
-  def extend_one
+  def extend_many(c)
     return false if !(recurrence = self.ice_cube.recurrence_rules.first)
-    return false if !(cnt = recurrence.occurrence_count)
-    self.count++
-    recurrence.count(cnt+1)
+    self.count+=c
+    recurrence.count(self.count)
+  end
+  def extend_one
+    return extend_many(1)
   end
   def build_ice_cube
     @ice_cube = IceCube::Schedule.new(self.start_time, duration: self.duration)

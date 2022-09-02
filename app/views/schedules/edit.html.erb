@@ -1,10 +1,19 @@
 <h1>Editing schedule</h1>
 
-<%= render "update_form", schedule: @schedule %>
+<div class="row">
+  <div class="col s12">
+    <ul class="tabs">
+      <li class="tab col m6 s12"><a href="#move">Move Class</a></li>
+      <li class="tab col m6 s12"><a href="#extend">Extend Schedule</a></li>
+    </ul>
+  </div>
+  <div id="move" class="col s12"><%= render "move_form", schedule: @schedule%></div>
+  <div id="extend" class="col s12"><%= render "extend_form", schedule: @schedule%></div>
+</div>
 
 <br>
 
 <div>
-  <%= link_to "Show this schedule", @schedule %> |
+  <%= link_to "Show the schedule holder", @schedule.scheduleable %> |
   <%= link_to "Back to schedules", schedules_path %>
 </div>

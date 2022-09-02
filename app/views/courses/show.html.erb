@@ -5,9 +5,16 @@
 <%= @course.teacher.name %>
 <h4>Fee</h4>
 <%= @course.fee/100.0 %>
+<h4>Next Occurrence</h4>
+<%= @course.schedule.next_occurring_time.start_time.localtime.strftime(TIMEFM)%>
 <h4>Dates</h4>
-<ul class="collection">
-  <% @occurrences.each do |o| %>
-    <li class="collection-item"><%= o.start_time%></li>
+<%= turbo_frame_tag 'calendar' do %>
+  <%= month_calendar(events: @occurrences) do |d|%>
+    <%= d.strftime("%d") %>
   <% end %>
-</ul>
+  <ul class="collection">
+    <% @occurrences.each do |o| %>
+      <li class="collection-item"><%= o.start_time.localtime.strftime(TIMEFM)%></li>
+    <% end %>
+  </ul>
+<% end %>

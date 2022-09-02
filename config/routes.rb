@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   resources :subjects, only: %i[ show ]
   resources :teachers
   resources :courses
+  patch "/schedule/:id/extend", to: "schedules#extend", as: "schedule_extend"
+  patch "/schedule/:id/move", to: "schedules#move", as: "schedule_move"
   get "/search/students", to: "students#search", as: "student_search"
   get "/search/teachers", to: "teachers#search", as: "teacher_search"
   get "/pay/:id", to: "users#payment", as: "user_pay"

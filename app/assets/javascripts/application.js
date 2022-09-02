@@ -9,6 +9,7 @@ $( document ).on('turbo:load', function() {
     $('.datepicker').datepicker();
     $('.timepicker').timepicker();
     $(".dropdown-trigger").dropdown();
+    $('.tabs').tabs();
     $('select').formSelect();
     $('select').addClass("hide-select");
     $('label').addClass("active");
