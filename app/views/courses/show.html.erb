@@ -5,8 +5,10 @@
 <%= @course.teacher.name %>
 <h4>Fee</h4>
 <%= @course.fee/100.0 %>
-<h4>Next Occurrence</h4>
-<%= @course.schedule.next_occurring_time.start_time.localtime.strftime(TIMEFM)%>
+<% if (noc = @course.schedule.next_occurring_time)%>
+  <h4>Next Occurrence</h4>
+  <%= noc.start_time.localtime.strftime(TIMEFM)%>
+<% end %>
 <h4>Dates</h4>
 <%= turbo_frame_tag 'calendar' do %>
   <%= month_calendar(events: @occurrences) do |d|%>

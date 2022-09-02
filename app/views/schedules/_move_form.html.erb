@@ -1,5 +1,6 @@
 <%= simple_form_for :schedule_move, url: schedule_move_path(schedule), method: :patch do |f| %>
-  <%= f.datetime_field :ftime, value: schedule.next_occurring_time.localtime.strftime("%Y-%m-%dT%H:%M:%S") %>
+  <% ot = schedule.next_occurring_time%>
+  <%= f.datetime_field :ftime, value: (ot && ot.localtime.strftime("%Y-%m-%dT%H:%M:%S")) %>
   <%= f.datetime_field :ttime %>
   <%= f.button :submit %>
 <% end %>
