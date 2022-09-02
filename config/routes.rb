@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :courses
   patch "/schedule/:id/extend", to: "schedules#extend", as: "schedule_extend"
   patch "/schedule/:id/move", to: "schedules#move", as: "schedule_move"
+  patch "/schedule/:id/postpone", to: "schedules#postpone", as: "schedule_postpone"
   get "/search/students", to: "students#search", as: "student_search"
   get "/search/teachers", to: "teachers#search", as: "teacher_search"
   get "/pay/:id", to: "users#payment", as: "user_pay"

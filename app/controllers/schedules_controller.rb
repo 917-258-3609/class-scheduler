@@ -2,7 +2,7 @@ require "chronic_duration"
 require "./app/helpers/occurrences_helper"
 class SchedulesController < ApplicationController
   include OccurrencesHelper
-  before_action :set_schedule, only: %i[ show edit update destroy move extend ]
+  before_action :set_schedule, only: %i[ show edit update destroy move extend postpone]
 
   # GET /schedules or /schedules.json
   def index
@@ -62,6 +62,15 @@ class SchedulesController < ApplicationController
         render :new, status: :unprocessable_entity
         flash[:error] = @schedule.errors.full_messages.to_sentence 
       end
+  end
+  def postpone
+    time = Time.parse(params[:schedule_postpone][:time]).utc
+    if @schedule.postpone(time)
+      redirect_to schedule_url(@schedule), notice: "Occurrence was successfully postponed."
+    else  
+      render :new, status: :unprocessable_entity
+      flash[:error] = @schedule.errors.full_messages.to_sentence 
+    end
   end
 
   private
