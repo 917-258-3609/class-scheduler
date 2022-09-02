@@ -5,7 +5,7 @@
         <tr>  
             <td><%= "#{s.first_name} #{s.last_name}" %></td>
             <td><%= s.user.email %></td>
-            <td><%= s.user.balance %></td>
+            <td><%= s.user.total_balance %></td>
             <td><%= link_to "Details", s, target: "_top" %></td>
             <td><%= link_to "Pay", user_pay_path(s.user), target: "_top" %></td>
             <td><%= link_to "Edit", edit_student_path(s), target: "_top"%></td>
