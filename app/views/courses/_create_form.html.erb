@@ -1,6 +1,6 @@
 <%= simple_form_for course do |f| %>
   <%= f.association :subject_level%>
-  <%= f.association :teacher %>
+  <%= f.association :teacher, required: false %>
   <%= f.association :students, include_hidden: false %>
   <%= f.simple_fields_for :occurrence do |s| %>
     <%= s.hidden_field :period, value: 1.week%>

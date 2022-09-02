@@ -20,10 +20,12 @@ class Course < ApplicationRecord
   end
   private
   def teacher_teaches_subject
+    errors.add(:course, "No teacher avaliable") if !self.teacher
     errors.add(:course, "Teacher must teaches the course subject level") if \
       !self.teacher.teaches?(self.subject_level)
   end
   def teacher_schedule
+    errors.add(:course, "No teacher avaliable") if !self.teacher
     other_schedules = \
       self.teacher.courses.active.where.not(id: self.id).extract_associated(:schedule)
     errors.add(:course, "Courses taught by the same teacher cannot overlap") if \

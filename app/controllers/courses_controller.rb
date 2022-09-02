@@ -25,6 +25,12 @@ class CoursesController < ApplicationController
     @recurrence = Occurrence.new(occurrence_params)
     @schedule = Schedule.new
     @schedule.occurrences << @recurrence
+    if params[:course][:teacher_id].blank?
+      params[:course][:teacher_id] = Teacher.generate_teacher_id(
+        @schedule,
+        SubjectLevel.find(params[:course][:subject_level_id])
+      )
+    end
     @course = Course.new(course_params)
     @course.is_active = true
     @course.schedule = @schedule
@@ -64,7 +70,7 @@ class CoursesController < ApplicationController
     params[:course][:occurrence][:period] = ActiveSupport::Duration.build(
       params[:course][:occurrence][:period].to_i
     )
-    params[:course][:fee] = (params[:course][:fee].to_f * 100).to_i 
+    params[:course][:fee] = (params[:course][:fee].to_f * 100).to_i
   end
   def set_course
     @course = Course.find(params[:id])

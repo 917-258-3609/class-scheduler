@@ -14,10 +14,22 @@ class Teacher < ApplicationRecord
     pg_search_scope :search_by_name, 
         against: [:name],
         using: :trigram 
+    scope :teaches, ->(sl){joins(:subject_levels).where(
+        "subject_levels.subject_id = ? AND subject_levels.level <= ?", sl.subject, sl.level
+    )}
     def teaches?(sl)
         my_sl = self.subject_levels.for_subject(sl.subject)
         return !my_sl.empty? && (my_sl.first.level <= sl.level)
     end
+    def self.generate_teacher_id(schedule, subject_level)
+        t = self.teaches(subject_level).all.filter{|t|!t.has_course_overlapping(schedule)}.first
+        return t && t.id
+    end
+    def has_course_overlapping(schedule)
+      my_schedules = \
+        self.courses.active.extract_associated(:schedule)
+      return my_schedules.any?{|s| s.overlapping?(schedule)}
+    end 
     private
     def schedule_preference_is_weekly
         return true if self.schedule.nil?
