@@ -3,10 +3,9 @@
 <h1>Schedules</h1>
 <%= turbo_frame_tag 'calendar' do %>
   <%= month_calendar(events: @calendar_occurrences) do |date, occurs| %>
-    <h6><%= date.day %></h6>
-    <% for o in occurs %>
-      <%= o.occurable.subject_level.to_s %>
-      <br/>
-    <% end %>
+    <%= link_to date.day, calendar_path(date), "data-turbo-frame": "calendar-show" %>
   <% end %>
+<% end %>
+<%= turbo_frame_tag 'calendar-show' do %>
+  <h6>Click on a date to show classes</h6>
 <% end %>

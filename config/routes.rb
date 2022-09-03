@@ -16,5 +16,6 @@ Rails.application.routes.draw do
   get "/search/teachers", to: "teachers#search", as: "teacher_search"
   get "/pay/:id", to: "users#payment", as: "user_pay"
   post "/pay/:id", to: "users#pay"
+  resources :calendars, only: %i[ show index ]
   root "schedules#index"
 end

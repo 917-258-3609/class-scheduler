@@ -1,0 +1,14 @@
+<%= turbo_frame_tag "calendar-show" do %>
+    <h5><%= @date.strftime("%Y-%m-%d") %></h5>
+    <% if @courses.empty? %>
+        <p>No course at current date</p>
+    <% else %>
+        <ul class="collection">
+        <% @courses.each do |c| %>
+            <li class="collection-item">
+                <%= link_to "#{c.teacher.name} #{c.subject_level.to_s}", c, target: "_top"%>
+            </li>
+        <% end %>
+    <% end %>
+    </ul>
+<% end %>
