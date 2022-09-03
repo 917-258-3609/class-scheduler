@@ -2,7 +2,7 @@
 <h4>Subject</h4>
 <%= @course.subject_level.to_s %>
 <h4>Teacher</h4>
-<%= @course.teacher.name %>
+<%= link_to @course.teacher.name, @course.teacher %>
 <h4>Fee</h4>
 <%= @course.fee/100.0 %>
 <% if (noc = @course.schedule.next_occurring_time)%>

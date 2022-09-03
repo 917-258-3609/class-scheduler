@@ -1,11 +1,14 @@
 class CoursesController < ApplicationController
+  include OccurrencesHelper
   before_action :set_course, only: %i[ show edit update destroy ]
   before_action :sanitize_params, only: %i[ create update ]
   def show
     start_date = params.fetch(:start_date, Date.today).to_date
     btime = start_date.beginning_of_month.beginning_of_week.beginning_of_day
     etime = start_date.end_of_month.end_of_week.end_of_day
-    @occurrences = @course.schedule.occurrences_between(btime, etime)
+    @occurrences = @course.schedule.occurrences_between(btime, etime).map do |x|
+      CalendarOccurrence.new(x, nil) 
+    end
   end
 
   def index
@@ -41,6 +44,7 @@ class CoursesController < ApplicationController
         @course.save!
       end
     rescue ActiveRecord::RecordInvalid
+      @course = Course.new
       render :new, status: :unprocessable_entity
       flash[:error] = @schedule.errors.full_messages.to_sentence + "\n" + 
                       @course.errors.full_messages.to_sentence + "\n" +

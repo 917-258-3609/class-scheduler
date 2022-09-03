@@ -4,7 +4,7 @@
 import "jquery"
 import "@hotwired/turbo-rails"
 import "@materializecss/materialize"
-$( document ).on('turbo:load', function() {   
+function init_all() {   
     $('.sortable').railsSortable();
     $('.datepicker').datepicker();
     $('.timepicker').timepicker();
@@ -13,4 +13,6 @@ $( document ).on('turbo:load', function() {
     $('select').formSelect();
     $('select').addClass("hide-select");
     $('label').addClass("active");
-}); 
+}
+$(init_all)
+$(document).on('turbo:load', init_all); 

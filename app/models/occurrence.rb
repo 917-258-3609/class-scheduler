@@ -102,7 +102,7 @@ class Occurrence < ApplicationRecord
   def start_time_is_in_days
     return true if self.period != 1.week
     errors.add(:occurrence, "Start time must be a recurring day") if \
-      !self.days.include?(self.start_time.wday) 
+      !self.days.include?(self.start_time.localtime.wday) 
   end
 
   def intersects?(time)

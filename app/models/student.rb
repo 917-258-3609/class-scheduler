@@ -17,7 +17,7 @@ class Student < ApplicationRecord
     before_validation :sanitize
 
     def total_charge_on(time=Time.now)
-        return self.courses.includes(:schedule).map{|c|c.total_fee_on(time)}.sum
+        return self.courses.active.includes(:schedule).map{|c|c.total_fee_on(time)}.sum
     end
     def name
         return "#{self.first_name} #{self.last_name}"
