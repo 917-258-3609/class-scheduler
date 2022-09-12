@@ -37,6 +37,7 @@ class CoursesController < ApplicationController
     @course = Course.new(course_params)
     @course.is_active = true
     @course.schedule = @schedule
+    @course.name ||= "#{@course.teacher.name} #{@course.subject_level.to_s}"
     begin 
       ActiveRecord::Base.transaction do
         @recurrence.save!

@@ -5,7 +5,7 @@
 <tbody>  
   <% @courses_info.each do |c|%>
     <tr>
-      <td><%= c[:course].subject_level.to_s %></td>
+      <td><%= c[:course].name %></td>
       <% if c[:next_occurrence]%>
         <td><%= c[:next_occurrence].localtime.strftime(TIMEFM) %></td>
       <% else %>

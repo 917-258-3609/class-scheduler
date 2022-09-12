@@ -6,7 +6,7 @@
         <ul class="collection">
         <% @courses.each do |c| %>
             <li class="collection-item">
-                <%= link_to "#{c.teacher.name} #{c.subject_level.to_s}", c, target: "_top"%>
+                <%= link_to c.name, c, target: "_top"%>
             </li>
         <% end %>
         </ul>

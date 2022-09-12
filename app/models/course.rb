@@ -10,6 +10,7 @@ class Course < ApplicationRecord
   validates_presence_of :schedule
   validates_presence_of :subject_level
   validates_presence_of :fee
+  validates_presence_of :name 
 
   validate :teacher_teaches_subject
   validate :teacher_schedule
