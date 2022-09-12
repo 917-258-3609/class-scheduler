@@ -1,9 +1,12 @@
 <h3><%= "#{@teacher.name}" %></h3>
+<h4>Subject Levels</h4>
 <% @teacher.subject_levels.each do |l| %>
     <p><%= l.to_s %></p>
 <% end %>
-<%= link_to "All teacher", teachers_path %>
-
+<h4>Teaching Time</h4>
+<% btime = Time.now.beginning_of_day - 1.month %>
+<%="#{@teacher.name} taught #{@teacher.total_teaching_hours_between(btime, Time.now)} hours since #{btime.strftime("%Y-%m-%d")} "%>
+<h4>Schedule</h4>
 <%= week_calendar(events: @calendar_occurrences) do |date, occurs| %>
   <h6><%= date.day %></h6>
   <% occurs.each do |o| %>
@@ -14,3 +17,4 @@
 
 <div class="content-body">
 </div>
+<%= link_to "All teacher", teachers_path %>

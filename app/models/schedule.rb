@@ -40,6 +40,12 @@ class Schedule < ApplicationRecord
   def occurrence_at(time)
     return self.occurrences.filter{|o|o.occurs_on?(time)}.first
   end
+  def total_time_between(start_time, end_time)
+    ret = self.occurrences.map{
+      |o|o.occurrences_between(start_time, end_time).length * o.duration
+    }.sum
+    return ret
+  end
   def last_extended_recurrence 
     recurrences = self.occurrences.all
     return nil if recurrences.any?{|o|o.inf_recur?}

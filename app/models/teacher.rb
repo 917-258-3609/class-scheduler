@@ -29,7 +29,12 @@ class Teacher < ApplicationRecord
       my_schedules = \
         self.courses.active.extract_associated(:schedule)
       return my_schedules.any?{|s| s.overlapping?(schedule)}
-    end 
+    end
+    def total_teaching_hours_between(start_time, end_time)
+        return self.courses.active.includes(:schedule).map{
+            |c|c.schedule.total_time_between(start_time, end_time)/3600.0
+        }.sum
+    end
     private
     def schedule_preference_is_weekly
         return true if self.schedule.nil?
