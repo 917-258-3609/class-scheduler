@@ -37,6 +37,9 @@ class CoursesController < ApplicationController
     @course = Course.new(course_params)
     @course.is_active = true
     @course.schedule = @schedule
+    puts("------------------")
+    puts(@course.name)
+    puts("------------------")
     @course.name ||= "#{@course.teacher.name} #{@course.subject_level.to_s}"
     begin 
       ActiveRecord::Base.transaction do
@@ -81,7 +84,7 @@ class CoursesController < ApplicationController
     @course = Course.find(params[:id])
   end
   def course_params
-    params.require(:course).permit(:subject_level_id, :teacher_id, :fee, student_ids: [])
+    params.require(:course).permit(:subject_level_id, :teacher_id, :fee, :name, student_ids: [])
   end
   def occurrence_params
     params.require(:course).permit(occurrence: [:period, :start_time, :duration, :count, days: []])[:occurrence]
