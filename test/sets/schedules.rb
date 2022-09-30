@@ -47,7 +47,7 @@ module ConstructionHelper
           {dow: 5, start_time_from_bod: 15.hours, duration: 1.hour}
         ]
         count: 20,
-        start_time_s: ""
+        start_time_s: "2022-08-03 15:00:00"
       )
 
       @lucifer_pref_schedule = FactoryBot.create(:schedule)
