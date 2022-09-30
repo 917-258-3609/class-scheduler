@@ -6,7 +6,6 @@ class CourseTest < ActiveSupport::TestCase
       create_subjects
       create_subject_levels
       create_schedules
-      create_occurrences
       create_teachers
       create_students
       create_courses  

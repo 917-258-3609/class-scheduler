@@ -3,8 +3,6 @@ class ScheduleRecurrence < ApplicationRecord
     belongs_to :schedule
    
     # Validations
-    validates_presence_of :day_of_week
-    validates_numericality_of :day_of_week, in: (0..6)
     validates_presence_of :start_time_from_bow 
     validates_presence_of :end_time_from_bow
     validate :duration_is_positive_and_less_than_one_day  

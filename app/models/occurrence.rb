@@ -8,8 +8,8 @@ class Occurrence < ApplicationRecord
   validates_associated :schedule
 
   # Scope
-  scope :overlapping_with, ->(st, et){where("start_time < ? AND ? < end_time", et, st)}
-  scope :between, ->(st, et){where("? < start_time AND end_time < ?", st, et)}
+  scope :overlapping_with, ->(st, et){where("start_time <= ? AND ? < end_time", et, st)}
+  scope :between, ->(st, et){where("? <= start_time AND end_time < ?", st, et)}
   scope :chronological, ->{reorder("end_time ASC")}
 
   # Callback

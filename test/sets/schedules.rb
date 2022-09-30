@@ -6,7 +6,7 @@ module ConstructionHelper
           {dow: 1, start_time_from_bod: 14.hours, duration: 1.hour}
         ],
         count: 3,
-        start_time_s: "2022-08-02 14:00:00"
+        start_time_s: "2022-08-01 14:00:00"
       )
       FactoryBot.create(:occurrence, schedule: @olympiad_math_schedule,
         start_time_s: "2022-07-19 15:00:00", end_time_s: "2022-07-19 16:00:00"
@@ -31,7 +31,7 @@ module ConstructionHelper
         start_time_s: "2022-08-02 14:00:00"
       )
 
-      @regular_english_2_schedule = FactoryBot.create(:recurring_schedule
+      @regular_english_2_schedule = FactoryBot.create(:recurring_schedule,
         recurrences: [
           {dow: 2, start_time_from_bod: 15.hours, duration: 1.hour}
         ],
@@ -39,18 +39,25 @@ module ConstructionHelper
         start_time_s: "2022-08-02 15:00:00"
       )
 
-      @nobel_science_schedule = FactoryBot.create(:recurring_schedule
+      @nobel_science_schedule = FactoryBot.create(:recurring_schedule,
         recurrences: [
           {dow: 0, start_time_from_bod: 15.hours, duration: 1.hour},
           {dow: 3, start_time_from_bod: 15.hours, duration: 1.hour},
           {dow: 4, start_time_from_bod: 15.hours, duration: 1.hour},
           {dow: 5, start_time_from_bod: 15.hours, duration: 1.hour}
-        ]
+        ],
         count: 20,
         start_time_s: "2022-08-03 15:00:00"
       )
 
-      @lucifer_pref_schedule = FactoryBot.create(:schedule)
+      @lucifer_pref_schedule = FactoryBot.create(:recurring_schedule,
+        recurrences: [
+          {dow: 1, start_time_from_bod: 14.hours, duration: 1.hour},
+          {dow: 2, start_time_from_bod: 14.hours, duration: 2.hour}
+        ],
+        count: 40,
+        start_time_s: "2022-08-01 14:00:00"
+      )
       @empty_schedule = FactoryBot.create(:schedule)
     end
     def destroy_schedules

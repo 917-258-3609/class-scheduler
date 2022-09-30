@@ -1,4 +1,4 @@
-class RemoveIceCubeBFromOccurrences < ActiveRecord::Migration[7.0]
+class MakeOccurrenceOneTime < ActiveRecord::Migration[7.0]
   def change
     remove_column :occurrences, :ice_cube_b
     remove_column :occurrences, :days

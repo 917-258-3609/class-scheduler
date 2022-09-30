@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_06_153455) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_25_204015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "plpgsql"
@@ -38,16 +38,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_153455) do
 
   create_table "occurrences", force: :cascade do |t|
     t.datetime "start_time"
-    t.integer "count"
-    t.integer "days", array: true
-    t.interval "period"
-    t.interval "duration"
     t.bigint "schedule_id"
-    t.jsonb "ice_cube_b"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "end_time"
     t.index ["schedule_id"], name: "index_occurrences_on_schedule_id"
+  end
+
+  create_table "schedule_recurrences", force: :cascade do |t|
+    t.interval "start_time_from_bow"
+    t.interval "end_time_from_bow"
+    t.bigint "schedule_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["schedule_id"], name: "index_schedule_recurrences_on_schedule_id"
   end
 
   create_table "schedules", force: :cascade do |t|
@@ -55,6 +59,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_153455) do
     t.bigint "scheduleable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["scheduleable_type", "scheduleable_id"], name: "index_schedules_on_scheduleable"
   end
 

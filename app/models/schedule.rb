@@ -1,8 +1,10 @@
 class Schedule < ApplicationRecord
   Duration = ActiveSupport::Duration
+  Base = ActiveRecord::Base
 
   belongs_to :scheduleable, polymorphic: true, optional: true
   has_many :occurrences, dependent: :destroy
+  has_many :schedule_recurrences, dependent: :destroy
 
   validate :occurrences_do_not_overlap
   validate :recurrences_do_not_overlap
@@ -29,18 +31,20 @@ class Schedule < ApplicationRecord
     return false if s.nil? || s.occurrences.empty?
     t_time = self.travel_time(s)
 
-    my_id_sql = sanitize_sql_array(["schedule_id == ?", self.id])
-    s_id_sql = sanitize_sql_array(["o.schedule_id == ?", s.id])
-    overlap_sql = sanitize_sql_array([
-      "(start_time + interval '?') <= o.end_time AND o.start_time <= (end_time + interval '?')", 
+    my_id_sql = Base.sanitize_sql_array(["occurrences.schedule_id = ?", self.id])
+    s_id_sql = Base.sanitize_sql_array(["o.schedule_id = ?", s.id])
+    overlap_sql = Base.sanitize_sql_array([
+      "(occurrences.start_time + interval '?') < o.end_time AND 
+        o.start_time < (occurrences.end_time + interval '?')", 
       t_time, t_time
     ])
-    return Occurrence
+    j = Occurrence
       .joins("INNER JOIN occurrences AS o 
                  ON #{my_id_sql} 
                 AND #{s_id_sql} 
                 AND #{overlap_sql}")
-      .any?
+    return j.any?
+      
   end
   def occurrences_between(start_time, end_time)
     return self.occurrences.between(start_time, end_time).all
@@ -72,14 +76,14 @@ class Schedule < ApplicationRecord
       bow = recur_time.beginning_of_week
       time_from_bow = Duration.build(recur_time - bow)
       sorted_recurrences = self.schedule_recurrences.order("end_time_from_bow ASC")
-      recurrences_after_time = sorted_recurrences.where("start_time_from_bow > ?", time_from_bow)
+      recurrences_after_time = sorted_recurrences.where("start_time_from_bow >= ?", time_from_bow)
       if recurrences_after_time.any?
-        ret = Occurrence.build(
+        ret = Occurrence.new(
           recurrences_after_time.first.start_time_from_bow + bow,
           recurrences_after_time.first.end_time_from_bow + bow
         )
       else
-        ret = Occurrence.build(
+        ret = Occurrence.new(
           sorted_recurrences.first.start_time_from_bow + bow + 1.week,
           sorted_recurrences.first.end_time_from_bow + bow + 1.week
         )
@@ -88,37 +92,37 @@ class Schedule < ApplicationRecord
       recur_time = ret.end_time
     end
   end
-  def next_recurrences(until_condition)
+  def next_recurrences()
     cnt = 0
     recurring_occurrences = []
     bow = self.end_time.beginning_of_week
     time_from_bow = Duration.build(self.end_time - bow)
 
     sorted_recurrences = self.schedule_recurrences.order("end_time_from_bow ASC")
-    recurrences_after_time = sorted_recurrences.where("start_time_from_bow >= ?", time_from_bow)
+    recurrences_after_time = sorted_recurrences.where("start_time_from_bow >= ?", time_from_bow.iso8601)
     future_occurrences = self.occurrences.where("start_time >= ?", self.end_time).chronological.all
     
     recurrences_after_time.each do |r|
-      break if until_condition({count: cnt, time: r.end_time_from_bow+bow})
-      o = Occurrence.build(
-        r.start_time_from_bow + bow,
-        r.end_time_from_bow + bow
+      break if yield(count: cnt, time: bow+r.end_time_from_bow)
+      o = Occurrence.new(
+        start_time: bow + r.start_time_from_bow,
+        end_time: bow + r.end_time_from_bow
       )
       next if future_occurrences.any?{|x|x.overlapping?(o)}
       recurring_occurrences.append(o)
-      cnt++
+      cnt += 1
     end
     loop do
       bow += 1.week
       break if !sorted_recurrences.each do |r|
-        break if until_condition({count: cnt, time: r.end_time_from_bow+bow})
-        o = Occurrence.build(
-          r.start_time_from_bow + bow,
-          r.end_time_from_bow + bow
+        break if yield(count: cnt, time: bow+r.end_time_from_bow)
+        o = Occurrence.new(
+          start_time: bow + r.start_time_from_bow,
+          end_time: bow + r.end_time_from_bow
         )
         next if future_occurrences.any?{|x|x.overlapping?(o)}
         recurring_occurrences.append(o)
-        cnt++
+        cnt+=1
       end
     end
     return recurring_occurrences
@@ -145,12 +149,13 @@ class Schedule < ApplicationRecord
   end
   # TODO: Maybe set start_time
   def extend_count(c)
-    until_count = ->(params){params[:count] == c}
-    return (self << (o = self.next_recurrences(until_count)) && self.end_time = o[-1].end_time)
+     o = self.next_recurrences {|params| params[:count] == c}
+    return (self.occurrences << (o) && self.end_time = o[-1].end_time)
   end
   def extend_time(d)
-    until_time = ->(params){params[:time] >= (self.end_time + d)}
-    return (self << (o = self.next_recurrences(until_time)) && self.end_time = o[-1].end_time)
+    return (self.occurrences << (
+      o = self.next_recurrences {|params| params[:time] > (self.end_time + d)}
+    ) && self.end_time = o[-1].end_time)
   end
 
   def teacher
@@ -174,34 +179,33 @@ class Schedule < ApplicationRecord
   private
   def occurrences_do_not_overlap
     return true if self.occurrences.size < 2
-    t_time = self.travel_time(self)
     
-    overlap_sql = sanitize_sql_array([
-      "(start_time + interval '?') <= o.end_time AND o.start_time <= (end_time + interval '?')", 
-      t_time, t_time
-    ])
     my_occurrences_sql = self.occurrences.to_sql
-    return !self.occurrences.joins(
+    if self.occurrences.joins(
       "INNER JOIN (#{my_occurrences_sql}) as o
-          ON id != o.id
-         AND #{overlap_sql}"
-    ).any?
+          ON occurrences.id != o.id
+         AND occurrences.start_time < o.end_time 
+         AND o.start_time < occurrences.end_time"
+      ).any?
+      errors.add(:schedule, "Schedule cannot contain overlapping occurrences")
+    end
   end
   def recurrences_do_not_overlap
     return true if self.schedule_recurrences.size < 2
     t_time = self.travel_time(self)
     
-    overlap_sql = sanitize_sql_array([
-      "(start_time_from_bow + interval '?') <= o.end_time_from_bow AND 
-                      o.start_time_from_bow <= (end_time_from_bow + interval '?')", 
+    overlap_sql = Base.sanitize_sql_array([
+      "(schedule_recurrences.start_time_from_bow + interval '?') <
+      o.end_time_from_bow AND o.start_time_from_bow < 
+      (schedule_recurrences.end_time_from_bow + interval '?')", 
       t_time, t_time
     ])
     my_recurrences_sql = self.schedule_recurrences.to_sql
-    return !self.schedule_recurrences.joins(
+    return !(self.schedule_recurrences.joins(
       "INNER JOIN (#{my_recurrences_sql}) as o
-          ON id != o.id
+          ON schedule_recurrences.id != o.id
          AND #{overlap_sql}"
-    ).any?
+    ).any?)
   end
   # TODO: store in db
   def travel_time(s)
