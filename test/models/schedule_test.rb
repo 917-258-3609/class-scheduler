@@ -117,8 +117,21 @@ class ScheduleTest < ActiveSupport::TestCase
       destroy_teachers
       destroy_subject_levels
       destroy_subjects
+    end 
+    should "have postpone method that move an occurrence to next occurence" do
+      assert(@olympiad_math_schedule.occurs_on?(Time.parse "2022-08-08 14:00:00 UTC"))
+      @olympiad_math_schedule.postpone(Time.parse "2022-08-08 14:00:00 UTC")
+      assert(!@olympiad_math_schedule.occurs_on?(Time.parse "2022-08-08 14:00:00 UTC"))
+      assert(@olympiad_math_schedule.occurs_on?(Time.parse "2022-08-22 14:00:00 UTC"))
+      
+      assert(@regular_math_schedule.occurs_on?(Time.parse "2022-08-01 15:15:00 UTC"))
+      assert(@regular_math_schedule.occurs_on?(Time.parse "2022-08-22 15:30:00 UTC"))
+      @regular_math_schedule.postpone(Time.parse "2022-08-01 15:15:00 UTC")
+      assert(!@regular_math_schedule.occurs_on?(Time.parse "2022-08-01 15:15:00 UTC"))
+      assert(@regular_math_schedule.occurs_on?(Time.parse "2022-08-29 15:15:00 UTC"))
     end
   end
+ 
   private
   def assert_overlapping(o1, o2)
     assert(o1.overlapping?(o2))

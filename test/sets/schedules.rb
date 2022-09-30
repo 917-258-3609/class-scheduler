@@ -22,6 +22,9 @@ module ConstructionHelper
         count: 3,
         start_time_s: "2022-08-01 15:15:00"
       )
+      FactoryBot.create(:occurrence, schedule: @regular_math_schedule,
+        start_time_s: "2022-08-22 15:30:00", end_time_s: "2022-08-22 16:15:00"
+      )
 
       @regular_english_1_schedule = FactoryBot.create(:recurring_schedule,
         recurrences: [
