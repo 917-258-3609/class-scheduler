@@ -70,29 +70,7 @@ class Schedule < ApplicationRecord
     return total_time
   end
   # Recurrence
-  def next_recurrence
-    recur_time = self.end_time
-    loop do
-      bow = recur_time.beginning_of_week
-      time_from_bow = Duration.build(recur_time - bow)
-      sorted_recurrences = self.schedule_recurrences.order("end_time_from_bow ASC")
-      recurrences_after_time = sorted_recurrences.where("start_time_from_bow >= ?", time_from_bow)
-      if recurrences_after_time.any?
-        ret = Occurrence.new(
-          recurrences_after_time.first.start_time_from_bow + bow,
-          recurrences_after_time.first.end_time_from_bow + bow
-        )
-      else
-        ret = Occurrence.new(
-          sorted_recurrences.first.start_time_from_bow + bow + 1.week,
-          sorted_recurrences.first.end_time_from_bow + bow + 1.week
-        )
-      end
-      return ret if !self.occurrences.overlapping_with(ret.start_time, ret.end_time).any?
-      recur_time = ret.end_time
-    end
-  end
-  def next_recurrences()
+  def next_recurrences
     cnt = 0
     recurring_occurrences = []
     bow = self.end_time.beginning_of_week
@@ -194,18 +172,15 @@ class Schedule < ApplicationRecord
     return true if self.schedule_recurrences.size < 2
     t_time = self.travel_time(self)
     
-    overlap_sql = Base.sanitize_sql_array([
-      "(schedule_recurrences.start_time_from_bow + interval '?') <
-      o.end_time_from_bow AND o.start_time_from_bow < 
-      (schedule_recurrences.end_time_from_bow + interval '?')", 
-      t_time, t_time
-    ])
     my_recurrences_sql = self.schedule_recurrences.to_sql
-    return !(self.schedule_recurrences.joins(
+    if self.schedule_recurrences.joins(
       "INNER JOIN (#{my_recurrences_sql}) as o
           ON schedule_recurrences.id != o.id
-         AND #{overlap_sql}"
-    ).any?)
+         AND schedule_recurrences.start_time_from_bow < o.end_time_from_bow 
+         AND o.start_time_from_bow < schedule_recurrences.end_time_from_bow"
+      ).any?
+      errors.add(:schedule, "Schedule cannot contain overlapping recurrences")
+    end
   end
   # TODO: store in db
   def travel_time(s)

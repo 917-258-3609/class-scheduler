@@ -50,8 +50,28 @@ class ScheduleTest < ActiveSupport::TestCase
         start_time_s: "2022-08-02 15:00:00",
         end_time_s: "2022-08-02 15:30:00"
       )
-      assert(@regular_english_2_schedule.valid?)
+      assert(!@testing_occurrence.valid?)
+      assert(!@regular_english_2_schedule.valid?)
+      @testing_occurrence.delete
+
+      @testing_occurrence = FactoryBot.create(:occurrence, 
+        schedule: @regular_english_2_schedule, 
+        start_time_s: "2022-08-02 16:00:00",
+        end_time_s: "2022-08-02 16:30:00"
+      )
       assert(@testing_occurrence.valid?)
+      assert(@regular_english_2_schedule.valid?)
+    end
+    should "not allow overlapping recurrences in same schedule" do
+      @testing_schedule = FactoryBot.create(:recurring_schedule,
+        recurrences: [
+          {dow: 1, start_time_from_bod: 8.hours, duration: 2.hours},
+          {dow: 1, start_time_from_bod: 9.hours, duration: 1.hours}
+        ],
+        count: 4,
+        start_time_s: "2022-08-01 08:00:00"
+      )
+      assert(!@testing_schedule.valid?)
     end
     should "have move one method that moves one occurrence" do
       ftime = Time.parse("2022-08-08 14:00:00 UTC")

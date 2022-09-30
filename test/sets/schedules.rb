@@ -38,6 +38,10 @@ module ConstructionHelper
         count: 20,
         start_time_s: "2022-08-02 15:00:00"
       )
+      FactoryBot.create(:occurrence, schedule: @regular_english_2_schedule,
+        start_time_s: "2022-07-26 15:00:00", end_time_s: "2022-07-26 16:00:00"
+      )
+
 
       @nobel_science_schedule = FactoryBot.create(:recurring_schedule,
         recurrences: [

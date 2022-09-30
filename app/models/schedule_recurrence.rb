@@ -5,6 +5,8 @@ class ScheduleRecurrence < ApplicationRecord
     # Validations
     validates_presence_of :start_time_from_bow 
     validates_presence_of :end_time_from_bow
+    validates :start_time_from_bow, comparison: {less_than: 1.week} 
+    validates :end_time_from_bow, comparison: {less_than: 1.week} 
     validate :duration_is_positive_and_less_than_one_day  
     
     # Scope

@@ -13,7 +13,6 @@ class TeacherTest < ActiveSupport::TestCase
     # end
     should "have total_teaching_hours_between that summarize total teaching time" do
       create_schedules
-      create_occurrences
       create_courses
 
       btime = Time.parse("2022-08-01 14:00:00")

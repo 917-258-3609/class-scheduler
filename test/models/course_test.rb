@@ -26,11 +26,16 @@ class CourseTest < ActiveSupport::TestCase
       assert(
         !@olympiad_math_course.schedule.overlapping?(@regular_math_course.schedule)
       )
-      bad_schedule = FactoryBot.build(:schedule)
+      bad_schedule = FactoryBot.create(:schedule)
       bad_schedule.occurrences << FactoryBot.build(:occurrence,
         schedule: bad_schedule,
         start_time_s: "2022-08-01 14:30:00", 
-        count: 2
+        end_time_s: "2022-08-01 15:30:00", 
+      )
+      bad_schedule.occurrences << FactoryBot.build(:occurrence,
+        schedule: bad_schedule,
+        start_time_s: "2022-08-08 14:30:00", 
+        end_time_s: "2022-08-08 15:30:00", 
       )
       assert(bad_schedule.overlapping?(@olympiad_math_course.schedule))
       @regular_math_course.schedule = bad_schedule
